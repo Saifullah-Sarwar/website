@@ -1,0 +1,2643 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>পাঠশালা প্লাস | ICT Help Group, Rangunia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f4ff;
+    --surface: #ffffff;
+    --surface-2: #f8fafc;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-2: #64748b;
+    --primary: #4f46e5;
+    --primary-2: #7c3aed;
+    --accent: #ec4899;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --sidebar-bg: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+    --sidebar-text: #c7d2fe;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 30px rgba(79,70,229,0.15);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  [data-theme="dark"] {
+    --bg: #0a0e1a;
+    --surface: #151b2e;
+    --surface-2: #1e2740;
+    --border: #2a3450;
+    --text: #f1f5f9;
+    --text-2: #94a3b8;
+    --sidebar-bg: linear-gradient(180deg, #0a0e1a 0%, #151b2e 100%);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Hind Siliguri', 'Segoe UI', Tahoma, sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; transition: background 0.3s, color 0.3s;
+  }
+
+  .layout { display: grid; grid-template-columns: 270px 1fr; min-height: 100vh; transition: grid-template-columns 0.3s ease; }
+  body.sidebar-collapsed .layout { grid-template-columns: 0 1fr; }
+  body.sidebar-collapsed .sidebar { transform: translateX(-100%); }
+
+  .sidebar {
+    background: var(--sidebar-bg); color: var(--sidebar-text);
+    padding: 22px 14px; position: sticky; top: 0; height: 100vh;
+    overflow-y: auto; transition: transform 0.3s ease; z-index: 100; width: 270px;
+  }
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+  .brand { display: flex; align-items: center; gap: 12px; padding: 6px 6px 22px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 22px; }
+  .brand-logo {
+    width: 46px; height: 46px; border-radius: 14px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b, #ec4899);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 18px rgba(251,191,36,0.4); flex-shrink: 0;
+  }
+  .brand-logo svg { width: 26px; height: 26px; }
+  .brand-name { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.02rem; font-weight: 700; color: white; line-height: 1.2; letter-spacing: 0.2px; }
+  .brand-tag { font-size: 0.7rem; color: #fbbf24; font-weight: 600; margin-top: 3px; }
+
+  .nav-section { margin-bottom: 22px; }
+  .nav-title { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.4px; color: rgba(255,255,255,0.4); padding: 6px 10px; font-weight: 700; font-family: 'Poppins', sans-serif; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 11px; cursor: pointer;
+    font-size: 0.93rem; font-weight: 500; transition: all 0.2s;
+    margin-bottom: 3px; color: var(--sidebar-text);
+    border: none; background: none; width: 100%; text-align: left;
+    font-family: inherit; position: relative;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+  .nav-item.active {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white; font-weight: 600;
+    box-shadow: 0 4px 14px rgba(99,102,241,0.45);
+  }
+  .nav-icon {
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; border-radius: 7px;
+    background: rgba(255,255,255,0.08);
+  }
+  .nav-icon svg { width: 15px; height: 15px; }
+  .nav-item.active .nav-icon { background: rgba(255,255,255,0.22); }
+
+  .nav-icon.home-icon {
+    background: linear-gradient(135deg, rgba(59,130,246,0.28), rgba(99,102,241,0.22));
+    color: #93c5fd;
+  }
+  .nav-item.active .nav-icon.home-icon { background: rgba(255,255,255,0.25); color: #fff; }
+
+  .nav-icon.folder-icon {
+    background: linear-gradient(135deg, rgba(251,191,36,0.28), rgba(245,158,11,0.18));
+    color: #fbbf24;
+    transition: all 0.25s ease;
+  }
+  .nav-group.open .nav-icon.folder-icon {
+    background: linear-gradient(135deg, rgba(251,191,36,0.5), rgba(245,158,11,0.35));
+    color: #fde047;
+    box-shadow: 0 0 12px rgba(251,191,36,0.3);
+  }
+  .nav-item.active .nav-icon.folder-icon { background: rgba(255,255,255,0.25); color: #fde047; }
+
+  .nav-icon.sub-icon {
+    width: 22px; height: 22px;
+    background: rgba(139,92,246,0.18);
+    color: #a78bfa;
+    border-radius: 6px;
+  }
+  .nav-icon.sub-icon svg { width: 12px; height: 12px; }
+  .nav-item.sub-item.active .nav-icon.sub-icon {
+    background: rgba(255,255,255,0.25);
+    color: white;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    background: rgba(255,255,255,0.12); color: white;
+    padding: 2px 9px; border-radius: 10px;
+    font-size: 0.72rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .nav-item.active .nav-badge { background: rgba(255,255,255,0.3); }
+
+  .nav-text {
+    flex: 1; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .nav-item .chevron {
+    width: 14px; height: 14px;
+    margin-left: 4px;
+    flex-shrink: 0;
+    opacity: 0.55;
+    transition: transform 0.28s ease, opacity 0.2s ease;
+  }
+  .nav-item:hover .chevron { opacity: 0.9; }
+  .nav-group.open .nav-item .chevron { transform: rotate(90deg); opacity: 1; }
+
+  .nav-group { margin-bottom: 2px; }
+
+  .nav-children {
+    max-height: 0;
+    overflow: hidden;
+    padding-left: 12px;
+    margin-left: 14px;
+    border-left: 2px solid rgba(255,255,255,0.09);
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                padding-top 0.25s ease,
+                padding-bottom 0.25s ease;
+  }
+  .nav-group.open .nav-children {
+    max-height: 1200px;
+    padding-top: 4px;
+    padding-bottom: 6px;
+  }
+
+  .nav-item.sub-item {
+    padding: 7px 10px;
+    font-size: 0.86rem;
+    font-weight: 500;
+    border-radius: 9px;
+    margin-bottom: 2px;
+  }
+  .nav-item.sub-item .nav-badge {
+    font-size: 0.66rem;
+    padding: 1px 7px;
+  }
+
+  .nav-empty {
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.35);
+    font-style: italic;
+  }
+
+  .main { padding: 24px 28px 40px; min-width: 0; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .menu-toggle {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 1px solid var(--border);
+    width: 42px; height: 42px; border-radius: var(--radius-sm);
+    font-size: 1.2rem; cursor: pointer; color: var(--text); transition: all 0.2s; flex-shrink: 0;
+  }
+  .menu-toggle:hover { background: var(--surface-2); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .page-title h1 { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.55rem; font-weight: 700; color: var(--text); margin-bottom: 4px; letter-spacing: -0.3px; }
+  .page-title p { font-size: 0.9rem; color: var(--text-2); }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .icon-btn {
+    background: var(--surface); border: 1px solid var(--border);
+    width: 42px; height: 42px; border-radius: var(--radius-sm);
+    cursor: pointer; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text); transition: all 0.2s;
+  }
+  .icon-btn:hover { background: var(--surface-2); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+  .search-box { position: relative; flex: 1; max-width: 300px; min-width: 180px; }
+  .search-box input { width: 100%; padding: 11px 16px 11px 42px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font-size: 0.92rem; font-family: inherit; outline: none; transition: all 0.2s; }
+  .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.15); }
+  .search-box svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-2); pointer-events: none; }
+
+  .page-section { display: none; animation: fadeIn 0.35s ease; }
+  .page-section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .hero-banner {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+    border-radius: var(--radius); padding: 24px 26px;
+    margin-bottom: 18px; color: white; position: relative; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(99,102,241,0.25);
+  }
+  .hero-banner::before { content: ''; position: absolute; top: -50%; right: -20%; width: 320px; height: 320px; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%); border-radius: 50%; }
+  .hero-banner::after { content: '📚'; position: absolute; right: 20px; bottom: -20px; font-size: 8rem; opacity: 0.08; transform: rotate(-15deg); }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 10px; backdrop-filter: blur(10px); }
+  .hero-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: clamp(0.95rem, 2.2vw, 1.5rem); font-weight: 700; line-height: 1.3; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hero-motto { font-size: clamp(0.75rem, 1.6vw, 0.95rem); opacity: 0.95; font-weight: 500; }
+  .hero-motto strong { color: #fbbf24; font-weight: 700; }
+
+  .notice-bar { display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 1px solid #fbbf24; border-radius: var(--radius); padding: 10px 14px; margin-bottom: 22px; box-shadow: 0 4px 14px rgba(251,191,36,0.25); overflow: hidden; position: relative; }
+  [data-theme="dark"] .notice-bar { background: linear-gradient(135deg, #422006 0%, #57330f 100%); border-color: #78350f; }
+  .notice-label { display: flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; padding: 6px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; flex-shrink: 0; box-shadow: 0 2px 8px rgba(239,68,68,0.4); }
+  .notice-label svg { width: 14px; height: 14px; }
+  .notice-track { flex: 1; overflow: hidden; position: relative; height: 26px; }
+  .notice-scroll { display: inline-block; white-space: nowrap; font-family: 'Hind Siliguri', sans-serif; font-size: 1rem; font-weight: 600; color: #92400e; padding-left: 100%; animation: noticeScroll 30s linear infinite; line-height: 26px; }
+  [data-theme="dark"] .notice-scroll { color: #fcd34d; }
+  .notice-scroll .notice-item { display: inline-block; margin-right: 20px; }
+  .notice-scroll .notice-sep { color: #f59e0b; margin: 0 20px; font-weight: 700; }
+  @keyframes noticeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+  .stats-dashboard-section {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 2px solid #10b981; border-radius: var(--radius);
+    padding: 20px 22px; margin-bottom: 24px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 4px 14px rgba(16,185,129,0.15);
+  }
+  [data-theme="dark"] .stats-dashboard-section { background: linear-gradient(135deg, #052e16 0%, #14532d 100%); border-color: #10b981; }
+  .stats-dash-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stats-dash-icon { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #10b981, #059669); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(16,185,129,0.4); flex-shrink: 0; }
+  .stats-dash-icon svg { width: 22px; height: 22px; }
+  .stats-dash-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.1rem; font-weight: 700; color: #065f46; }
+  [data-theme="dark"] .stats-dash-title { color: #6ee7b7; }
+  .stats-dash-subtitle { font-size: 0.8rem; color: #047857; margin-top: 2px; }
+  [data-theme="dark"] .stats-dash-subtitle { color: #34d399; }
+  .stats-counters { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .stat-counter-card { background: white; border: 1px solid #a7f3d0; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(16,185,129,0.08); transition: all 0.25s; }
+  [data-theme="dark"] .stat-counter-card { background: #052e16; border-color: #10b981; }
+  .stat-counter-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(16,185,129,0.2); }
+  .stat-counter-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.2rem; }
+  .stat-counter-icon.green { background: rgba(16,185,129,0.15); }
+  .stat-counter-icon.blue  { background: rgba(59,130,246,0.15); }
+  .stat-counter-icon.orange { background: rgba(249,115,22,0.15); }
+  .stat-counter-icon.purple { background: rgba(168,85,247,0.15); }
+  .stat-counter-info { flex: 1; min-width: 0; }
+  .stat-counter-label { font-size: 0.75rem; font-weight: 600; color: #047857; margin-bottom: 2px; }
+  [data-theme="dark"] .stat-counter-label { color: #34d399; }
+  .stat-counter-value { font-family: 'Poppins', sans-serif; font-size: 1.35rem; font-weight: 700; color: #065f46; line-height: 1; }
+  [data-theme="dark"] .stat-counter-value { color: #6ee7b7; }
+
+  .top-apps-list { background: white; border: 1px solid #a7f3d0; border-radius: 12px; padding: 14px 16px; }
+  [data-theme="dark"] .top-apps-list { background: #052e16; border-color: #10b981; }
+  .top-apps-title { font-size: 0.9rem; font-weight: 700; color: #065f46; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  [data-theme="dark"] .top-apps-title { color: #6ee7b7; }
+  .top-app-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; margin-bottom: 6px; transition: all 0.2s; background: #f0fdf4; }
+  [data-theme="dark"] .top-app-row { background: #0f2419; }
+  .top-app-row:hover { background: #d1fae5; transform: translateX(4px); }
+  .top-app-rank { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #059669); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+  .top-app-name { flex: 1; min-width: 0; font-size: 0.85rem; font-weight: 600; color: #065f46; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  [data-theme="dark"] .top-app-name { color: #6ee7b7; }
+  .top-app-clicks { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+  .top-apps-empty { text-align: center; padding: 20px; color: #047857; font-size: 0.85rem; }
+  [data-theme="dark"] .top-apps-empty { color: #34d399; }
+
+  .top-apps-section {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 2px solid #10b981; border-radius: var(--radius);
+    padding: 20px 22px; margin-bottom: 24px;
+    box-shadow: 0 4px 14px rgba(16,185,129,0.15);
+  }
+  [data-theme="dark"] .top-apps-section {
+    background: linear-gradient(135deg, #052e16 0%, #14532d 100%);
+    border-color: #10b981;
+  }
+
+  .approved-users-section {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 2px solid #3b82f6; border-radius: var(--radius);
+    padding: 20px 22px; margin-bottom: 24px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 4px 14px rgba(59,130,246,0.15);
+  }
+  [data-theme="dark"] .approved-users-section { background: linear-gradient(135deg, #172554 0%, #1e3a8a 100%); border-color: #3b82f6; }
+  .approved-users-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .approved-users-icon { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(59,130,246,0.4); flex-shrink: 0; }
+  .approved-users-icon svg { width: 22px; height: 22px; }
+  .approved-users-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.1rem; font-weight: 700; color: #1e40af; }
+  [data-theme="dark"] .approved-users-title { color: #93c5fd; }
+  .approved-users-subtitle { font-size: 0.8rem; color: #1d4ed8; margin-top: 2px; }
+  [data-theme="dark"] .approved-users-subtitle { color: #60a5fa; }
+  .approved-users-count { margin-left: auto; background: white; color: #1e40af; padding: 5px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; border: 2px solid #93c5fd; box-shadow: 0 2px 6px rgba(59,130,246,0.15); }
+  [data-theme="dark"] .approved-users-count { background: #1e3a8a; color: #bfdbfe; border-color: #3b82f6; }
+  .approved-users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .approved-user-card { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: white; border: 1px solid #bfdbfe; border-radius: 12px; transition: all 0.25s; }
+  [data-theme="dark"] .approved-user-card { background: #0f172a; border-color: #3b82f6; }
+  .approved-user-card:hover { transform: translateY(-2px); border-color: #3b82f6; box-shadow: 0 6px 18px rgba(59,130,246,0.2); }
+  .approved-user-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.95rem; flex-shrink: 0; text-transform: uppercase; box-shadow: 0 2px 8px rgba(59,130,246,0.35); }
+  .approved-user-info { flex: 1; min-width: 0; }
+  .approved-user-name { font-size: 0.9rem; font-weight: 700; color: #1e3a8a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  [data-theme="dark"] .approved-user-name { color: #bfdbfe; }
+  .approved-user-apps { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; padding: 3px 8px; border-radius: 8px; font-size: 0.68rem; font-weight: 700; flex-shrink: 0; }
+  .approved-users-empty { text-align: center; padding: 24px 20px; color: #1d4ed8; font-size: 0.9rem; grid-column: 1 / -1; }
+  [data-theme="dark"] .approved-users-empty { color: #60a5fa; }
+
+  .website-links-section {
+    background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+    border: 2px solid #d946ef; border-radius: var(--radius);
+    padding: 20px 22px; margin-bottom: 24px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 4px 14px rgba(217,70,239,0.15);
+  }
+  [data-theme="dark"] .website-links-section { background: linear-gradient(135deg, #4a044e 0%, #701a75 100%); border-color: #d946ef; }
+  .website-links-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .website-links-icon { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #d946ef, #a855f7); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(217,70,239,0.4); flex-shrink: 0; }
+  .website-links-icon svg { width: 22px; height: 22px; }
+  .website-links-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.1rem; font-weight: 700; color: #86198f; }
+  [data-theme="dark"] .website-links-title { color: #f0abfc; }
+  .website-links-subtitle { font-size: 0.8rem; color: #a21caf; margin-top: 2px; }
+  [data-theme="dark"] .website-links-subtitle { color: #e879f9; }
+  .website-links-count { margin-left: auto; background: white; color: #86198f; padding: 5px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; border: 2px solid #f0abfc; box-shadow: 0 2px 6px rgba(217,70,239,0.15); }
+  [data-theme="dark"] .website-links-count { background: #701a75; color: #f0abfc; border-color: #d946ef; }
+  .website-links-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .website-link-card { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: white; border: 1px solid #f0abfc; border-radius: 12px; text-decoration: none; color: inherit; transition: all 0.25s; }
+  [data-theme="dark"] .website-link-card { background: #1f0a2e; border-color: #a21caf; }
+  .website-link-card:hover { transform: translateY(-2px); border-color: #d946ef; box-shadow: 0 6px 18px rgba(217,70,239,0.25); }
+  .website-link-icon { width: 38px; height: 38px; border-radius: 10px; object-fit: cover; background: #fae8ff; flex-shrink: 0; padding: 3px; }
+  .website-link-info { flex: 1; min-width: 0; }
+  .website-link-name { font-size: 0.88rem; font-weight: 700; color: #86198f; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  [data-theme="dark"] .website-link-name { color: #f0abfc; }
+  .website-link-subject { font-size: 0.72rem; color: #a21caf; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  [data-theme="dark"] .website-link-subject { color: #e879f9; }
+
+  .new-apps-section {
+    background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+    border: 2px dashed #f59e0b; border-radius: var(--radius);
+    padding: 20px 22px; margin-bottom: 24px; position: relative; overflow: hidden;
+  }
+  [data-theme="dark"] .new-apps-section { background: linear-gradient(135deg, #2d1b00 0%, #422006 100%); border-color: #f59e0b; }
+  .new-apps-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; position: relative; z-index: 1; }
+  .new-apps-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; box-shadow: 0 4px 12px rgba(245,158,11,0.4); }
+  .new-apps-badge svg { width: 15px; height: 15px; }
+  .new-apps-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.1rem; font-weight: 700; color: #92400e; }
+  [data-theme="dark"] .new-apps-title { color: #fbbf24; }
+  .new-apps-count { background: white; color: #92400e; padding: 3px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; border: 1px solid #fbbf24; }
+  [data-theme="dark"] .new-apps-count { background: #1e2740; color: #fbbf24; }
+  .new-apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 16px; position: relative; z-index: 1; }
+  .app-card.new-highlight { background: white; border: 2px solid #f59e0b; position: relative; box-shadow: 0 8px 24px rgba(245,158,11,0.25); }
+  [data-theme="dark"] .app-card.new-highlight { background: #1e2740; border-color: #f59e0b; }
+  .app-card.new-highlight::before {
+    content: '🆕 নতুন'; position: absolute; top: -10px; right: -8px;
+    background: linear-gradient(135deg, #ef4444, #dc2626); color: white;
+    font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(239,68,68,0.5); z-index: 2;
+  }
+
+  .header-login-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none;
+    padding: 10px 20px; border-radius: 25px; font-family: inherit;
+    font-size: 0.92rem; font-weight: 600; cursor: pointer; transition: all 0.25s;
+    box-shadow: 0 4px 14px rgba(168,85,247,0.4); white-space: nowrap;
+  }
+  .header-login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(168,85,247,0.55); }
+  .header-login-btn svg { width: 16px; height: 16px; }
+
+  .header-user-btn {
+    display: none; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none;
+    padding: 6px 14px 6px 6px; border-radius: 25px; font-family: inherit;
+    font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.25s;
+    box-shadow: 0 4px 14px rgba(168,85,247,0.4); white-space: nowrap;
+  }
+  .header-user-btn.show { display: inline-flex; }
+  .header-user-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(168,85,247,0.55); }
+  .header-user-avatar { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+  .header-user-name { max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .login-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+  .login-modal-overlay.show { display: flex; }
+  .login-modal { background: white; border-radius: 20px; max-width: 440px; width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: 0 30px 80px rgba(0,0,0,0.5); animation: modalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); overflow: hidden; }
+  [data-theme="dark"] .login-modal { background: #1e2740; }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.85) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .login-modal-header { background: linear-gradient(135deg, #a855f7 0%, #7c3aed 50%, #ec4899 100%); padding: 32px 28px 24px; color: white; position: relative; overflow: hidden; }
+  .login-modal-header::before { content: ''; position: absolute; top: -50%; right: -30%; width: 250px; height: 250px; background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 70%); border-radius: 50%; }
+  .login-modal-header::after { content: '🔐'; position: absolute; right: 15px; bottom: -30px; font-size: 6rem; opacity: 0.12; transform: rotate(-15deg); }
+  .login-modal-header-content { position: relative; z-index: 1; }
+  .login-modal-badge { display: inline-block; background: rgba(255,255,255,0.22); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .login-modal-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; line-height: 1.2; }
+  .login-modal-subtitle { font-size: 0.85rem; opacity: 0.95; font-weight: 500; }
+  .modal-close-x { position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.2); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; transition: all 0.2s; z-index: 2; }
+  .modal-close-x:hover { background: rgba(255,255,255,0.35); transform: rotate(90deg); }
+  .login-modal-body { padding: 24px 28px 28px; }
+  .login-form-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; position: relative; }
+  .login-form-field label { font-size: 0.82rem; font-weight: 600; color: #581c87; }
+  [data-theme="dark"] .login-form-field label { color: #d8b4fe; }
+  .login-form-field .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: #a855f7; pointer-events: none; margin-top: 11px; }
+  .login-form-field input { padding: 12px 14px 12px 42px; border: 2px solid #d8b4fe; border-radius: 12px; font-family: inherit; font-size: 0.95rem; color: #0f172a; background: #faf5ff; outline: none; transition: all 0.2s; width: 100%; }
+  [data-theme="dark"] .login-form-field input { background: #2e1065; border-color: #7c3aed; color: #f1f5f9; }
+  .login-form-field input:focus { border-color: #a855f7; background: white; box-shadow: 0 0 0 4px rgba(168,85,247,0.15); }
+  .password-wrap { position: relative; }
+  .password-wrap input { padding-right: 46px !important; }
+  .password-toggle-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 8px; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #a855f7; transition: all 0.2s; }
+  .password-toggle-btn:hover { background: rgba(168,85,247,0.12); }
+  .password-toggle-btn svg { width: 18px; height: 18px; }
+  .login-submit-btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none; padding: 14px 24px; border-radius: 12px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.25s; box-shadow: 0 6px 20px rgba(168,85,247,0.4); margin-top: 6px; }
+  .login-submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(168,85,247,0.55); }
+  .login-submit-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+  .login-submit-btn svg { width: 18px; height: 18px; }
+  .login-modal-footer { margin-top: 18px; padding-top: 16px; border-top: 1px dashed #e9d5ff; text-align: center; font-size: 0.8rem; color: #7e22ce; }
+  [data-theme="dark"] .login-modal-footer { border-top-color: #7c3aed; color: #c084fc; }
+
+  .auth-status { margin-top: 12px; padding: 10px 14px; border-radius: 10px; font-size: 0.88rem; font-weight: 600; display: none; }
+  .auth-status.success { display: block; background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+  .auth-status.error { display: block; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+  [data-theme="dark"] .auth-status.success { background: #14532d; color: #86efac; }
+  [data-theme="dark"] .auth-status.error { background: #7f1d1d; color: #fecaca; }
+
+  .admin-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(5px); z-index: 1000; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
+  .admin-modal-overlay.show { display: flex; }
+  .admin-modal { background: white; border-radius: 20px; max-width: 820px; width: 100%; margin: auto 0; box-shadow: 0 30px 80px rgba(0,0,0,0.5); animation: modalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); overflow: hidden; }
+  [data-theme="dark"] .admin-modal { background: #1e2740; }
+  .admin-modal-header { background: linear-gradient(135deg, #a855f7 0%, #7c3aed 50%, #ec4899 100%); padding: 26px 28px; color: white; position: relative; overflow: hidden; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .admin-modal-header::before { content: ''; position: absolute; top: -50%; right: -20%; width: 280px; height: 280px; background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 70%); border-radius: 50%; }
+  .admin-modal-header > * { position: relative; z-index: 1; }
+  .admin-header-avatar { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 700; flex-shrink: 0; }
+  .admin-header-info { flex: 1; min-width: 0; }
+  .admin-header-info h2 { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .admin-header-info p { font-size: 0.82rem; opacity: 0.95; }
+  .admin-header-badge { background: rgba(16,185,129,0.95); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
+  .admin-logout-btn { background: rgba(255,255,255,0.25); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 8px 16px; border-radius: 20px; font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .admin-logout-btn:hover { background: rgba(255,255,255,0.4); }
+  .admin-modal-body { padding: 24px 28px 28px; }
+  .admin-section-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.1rem; font-weight: 700; color: #581c87; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  [data-theme="dark"] .admin-section-title { color: #d8b4fe; }
+  .admin-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  @media (max-width: 600px) { .admin-form-grid { grid-template-columns: 1fr; } }
+  .admin-field { display: flex; flex-direction: column; gap: 6px; }
+  .admin-field label { font-size: 0.82rem; font-weight: 600; color: #581c87; }
+  [data-theme="dark"] .admin-field label { color: #d8b4fe; }
+  .admin-field input { padding: 11px 14px; border: 2px solid #d8b4fe; border-radius: 10px; font-family: inherit; font-size: 0.9rem; color: #0f172a; background: #faf5ff; outline: none; transition: all 0.2s; width: 100%; }
+  [data-theme="dark"] .admin-field input { background: #2e1065; border-color: #7c3aed; color: #f1f5f9; }
+  .admin-field input:focus { border-color: #a855f7; background: white; box-shadow: 0 0 0 3px rgba(168,85,247,0.15); }
+  .admin-check { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #581c87; cursor: pointer; margin-bottom: 14px; }
+  [data-theme="dark"] .admin-check { color: #d8b4fe; }
+  .admin-check input { width: 18px; height: 18px; accent-color: #a855f7; cursor: pointer; }
+  .admin-actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .admin-primary-btn { flex: 1; min-width: 140px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.25s; box-shadow: 0 4px 14px rgba(168,85,247,0.35); }
+  .admin-primary-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(168,85,247,0.5); }
+  .admin-primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .admin-primary-btn svg { width: 18px; height: 18px; }
+  .admin-secondary-btn { background: transparent; color: #7e22ce; border: 2px solid #d8b4fe; padding: 10px 18px; border-radius: 10px; font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  [data-theme="dark"] .admin-secondary-btn { color: #c084fc; border-color: #7c3aed; }
+
+  .my-apps-section { margin-top: 20px; padding: 16px; background: rgba(255,255,255,0.6); border: 2px dashed #a855f7; border-radius: 12px; }
+  [data-theme="dark"] .my-apps-section { background: rgba(46,16,101,0.5); }
+  .my-apps-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .my-apps-icon { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .my-apps-icon svg { width: 18px; height: 18px; }
+  .my-apps-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1rem; font-weight: 700; color: #581c87; }
+  [data-theme="dark"] .my-apps-title { color: #d8b4fe; }
+  .my-apps-subtitle { font-size: 0.78rem; color: #7e22ce; margin-top: 2px; }
+  .btn-show-my-apps { margin-left: auto; background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.25s; }
+  .my-apps-box { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px dashed #d8b4fe; }
+  .my-apps-box.show { display: block; }
+  .my-apps-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+  .my-stat-chip { display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid #d8b4fe; padding: 6px 12px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; color: #581c87; }
+  [data-theme="dark"] .my-stat-chip { background: #2e1065; border-color: #7c3aed; color: #d8b4fe; }
+  .my-stat-chip strong { color: #a855f7; font-weight: 700; }
+  .btn-csv { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 7px 14px; border-radius: 20px; font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; margin-left: auto; }
+  .btn-csv svg { width: 14px; height: 14px; }
+  .my-apps-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+  .my-app-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: white; border: 1px solid #e9d5ff; border-radius: 10px; }
+  [data-theme="dark"] .my-app-item { background: #2e1065; border-color: #7c3aed; }
+  .my-app-clickable { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; cursor: pointer; text-decoration: none; color: inherit; }
+  .my-app-icon { width: 38px; height: 38px; border-radius: 10px; object-fit: cover; background: #f3e8ff; flex-shrink: 0; }
+  .my-app-info { min-width: 0; flex: 1; }
+  .my-app-name { font-size: 0.88rem; font-weight: 700; color: #581c87; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  [data-theme="dark"] .my-app-name { color: #d8b4fe; }
+  .my-app-meta { display: flex; gap: 5px; font-size: 0.7rem; color: #7e22ce; margin-top: 3px; flex-wrap: wrap; }
+  .my-app-meta span { background: #f3e8ff; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+  .my-app-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .btn-icon-action { width: 32px; height: 32px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+  .btn-icon-action svg { width: 15px; height: 15px; }
+  .btn-edit-app { background: rgba(59,130,246,0.12); color: #2563eb; }
+  .btn-delete-app { background: rgba(239,68,68,0.12); color: #dc2626; }
+  .my-apps-empty { text-align: center; padding: 30px 20px; color: #7e22ce; font-size: 0.9rem; grid-column: 1 / -1; }
+
+  .ranking-section { margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 2px dashed #f97316; border-radius: 12px; }
+  [data-theme="dark"] .ranking-section { background: linear-gradient(135deg, #431407 0%, #7c2d12 100%); border-color: #f97316; }
+  .ranking-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .ranking-icon { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #f97316, #ef4444); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ranking-icon svg { width: 18px; height: 18px; }
+  .ranking-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1rem; font-weight: 700; color: #9a3412; }
+  [data-theme="dark"] .ranking-title { color: #fdba74; }
+  .ranking-subtitle { font-size: 0.78rem; color: #c2410c; margin-top: 2px; }
+  .btn-show-ranking { margin-left: auto; background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  .ranking-box { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px dashed #fdba74; }
+  .ranking-box.show { display: block; }
+  .ranking-list { display: flex; flex-direction: column; gap: 8px; }
+  .rank-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: white; border: 1px solid #fed7aa; border-radius: 10px; }
+  [data-theme="dark"] .rank-item { background: #431407; border-color: #ea580c; }
+  .rank-item.me { background: linear-gradient(135deg, #fef3c7, #fde68a); border-color: #f59e0b; }
+  .rank-position { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 0.9rem; background: #f3f4f6; color: #6b7280; flex-shrink: 0; }
+  .rank-1 .rank-position { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; font-size: 1rem; }
+  .rank-2 .rank-position { background: linear-gradient(135deg, #cbd5e1, #94a3b8); color: white; }
+  .rank-3 .rank-position { background: linear-gradient(135deg, #fb923c, #ea580c); color: white; }
+  .rank-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #f97316, #ef4444); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.95rem; flex-shrink: 0; text-transform: uppercase; }
+  .rank-info { flex: 1; min-width: 0; }
+  .rank-name { font-weight: 700; color: #9a3412; font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rank-userid { font-size: 0.72rem; color: #c2410c; margin-top: 2px; }
+  .rank-count { display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #f97316, #ea580c); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+  .rank-you-badge { background: #fbbf24; color: #78350f; padding: 3px 8px; border-radius: 8px; font-size: 0.68rem; font-weight: 800; margin-left: 6px; }
+  .ranking-empty { text-align: center; padding: 24px 20px; color: #c2410c; font-size: 0.9rem; }
+
+  .edit-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(5px); z-index: 1100; align-items: center; justify-content: center; padding: 20px; }
+  .edit-modal-overlay.show { display: flex; }
+  .edit-modal { background: var(--surface); border: 2px solid #a855f7; border-radius: var(--radius); padding: 24px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; }
+  .edit-modal-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .edit-modal-icon { width: 42px; height: 42px; border-radius: 11px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .edit-modal-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.1rem; font-weight: 700; color: #1e40af; flex: 1; }
+  .btn-close-modal { background: rgba(239,68,68,0.1); color: #dc2626; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; }
+  .edit-form-row { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
+  .edit-form-row label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+  .edit-form-row input { padding: 10px 14px; border: 2px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 0.9rem; color: var(--text); background: var(--surface-2); outline: none; }
+
+  .comments-section { background: linear-gradient(135deg, #ecfeff 0%, #e0f2fe 100%); border: 1px solid #0ea5e9; border-radius: var(--radius); padding: 20px 22px; margin-bottom: 24px; overflow: hidden; box-shadow: 0 4px 14px rgba(14,165,233,0.15); }
+  [data-theme="dark"] .comments-section { background: linear-gradient(135deg, #082f49 0%, #0c4a6e 100%); border-color: #0ea5e9; }
+  .comments-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .comments-title-wrap { display: flex; align-items: center; gap: 12px; }
+  .comments-icon { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #0ea5e9, #6366f1); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(14,165,233,0.4); flex-shrink: 0; }
+  .comments-icon svg { width: 22px; height: 22px; }
+  .comments-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.1rem; font-weight: 700; color: #0c4a6e; }
+  [data-theme="dark"] .comments-title { color: #7dd3fc; }
+  .comments-subtitle { font-size: 0.8rem; color: #0369a1; margin-top: 2px; }
+  .comments-count { background: white; color: #0369a1; padding: 4px 12px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; border: 1px solid #0ea5e9; }
+  .comment-form-toggle { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 18px; }
+  .btn-show-form { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #0ea5e9, #6366f1); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; box-shadow: 0 6px 18px rgba(14,165,233,0.35); }
+  .btn-show-form svg { width: 18px; height: 18px; }
+  .comment-form-box { background: white; border: 2px solid #0ea5e9; border-radius: 14px; padding: 20px 22px; margin-bottom: 18px; display: none; }
+  [data-theme="dark"] .comment-form-box { background: #0c4a6e; border-color: #0284c7; }
+  .comment-form-box.show { display: block; }
+  .form-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.05rem; font-weight: 700; color: #0c4a6e; margin-bottom: 14px; }
+  .form-row { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: #0c4a6e; margin-bottom: 6px; }
+  .form-input, .form-textarea { width: 100%; padding: 11px 14px; border: 2px solid #bae6fd; border-radius: 10px; font-family: inherit; font-size: 0.92rem; color: #0f172a; background: #f8fafc; outline: none; }
+  [data-theme="dark"] .form-input, [data-theme="dark"] .form-textarea { background: #082f49; border-color: #075985; color: #f1f5f9; }
+  .form-textarea { resize: vertical; min-height: 90px; }
+  .star-rating { display: flex; gap: 6px; align-items: center; flex-direction: row-reverse; justify-content: flex-end; }
+  .star-rating input { display: none; }
+  .star-rating label { font-size: 1.8rem; cursor: pointer; color: #cbd5e1; line-height: 1; order: -1; }
+  .star-rating input:checked ~ label { color: #f59e0b; }
+  .form-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .btn-submit { flex: 1; min-width: 140px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #0ea5e9, #6366f1); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+  .btn-cancel { background: transparent; color: #0369a1; border: 2px solid #bae6fd; padding: 12px 20px; border-radius: 10px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+  .form-status { margin-top: 12px; padding: 10px 14px; border-radius: 10px; font-size: 0.88rem; font-weight: 600; display: none; }
+  .form-status.success { display: block; background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+  .form-status.error { display: block; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+  .comments-track { overflow: hidden; position: relative; mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%); }
+  .comments-scroll { display: flex; gap: 16px; width: max-content; animation: commentSlide 40s linear infinite; padding: 6px 0; }
+  @keyframes commentSlide { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .comment-card { background: white; border-radius: 14px; padding: 16px 18px; min-width: 280px; max-width: 320px; box-shadow: 0 4px 14px rgba(14,165,233,0.12); border: 1px solid #bae6fd; position: relative; flex-shrink: 0; }
+  [data-theme="dark"] .comment-card { background: #0c4a6e; border-color: #075985; }
+  .comment-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; position: relative; z-index: 1; }
+  .comment-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #0ea5e9, #6366f1); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.95rem; flex-shrink: 0; text-transform: uppercase; }
+  .comment-name { font-weight: 700; color: #0c4a6e; font-size: 0.92rem; }
+  .comment-date { font-size: 0.72rem; color: #0369a1; margin-top: 2px; }
+  .comment-body { font-size: 0.88rem; color: #334155; line-height: 1.55; }
+  .comment-rating { margin-top: 8px; font-size: 0.85rem; color: #f59e0b; letter-spacing: 1px; }
+  .no-comments { text-align: center; padding: 30px 20px; color: #0369a1; font-size: 0.9rem; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); transition: all 0.3s; position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
+  .stat-card.purple::before { background: linear-gradient(180deg, #6366f1, #8b5cf6); }
+  .stat-card.green::before { background: linear-gradient(180deg, #10b981, #06b6d4); }
+  .stat-card.orange::before { background: linear-gradient(180deg, #f59e0b, #ec4899); }
+  .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .stat-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .stat-label { font-size: 0.85rem; color: var(--text-2); font-weight: 600; }
+  .stat-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .stat-icon svg { width: 22px; height: 22px; }
+  .stat-icon.purple { background: rgba(99,102,241,0.13); color: #6366f1; }
+  .stat-icon.green { background: rgba(16,185,129,0.13); color: #10b981; }
+  .stat-icon.orange { background: rgba(245,158,11,0.13); color: #f59e0b; }
+  .stat-value { font-family: 'Poppins', sans-serif; font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1.1; }
+  .stat-sub { font-size: 0.8rem; color: var(--text-2); margin-top: 4px; }
+
+  .charts-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 16px; margin-bottom: 24px; }
+  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .chart-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .chart-title { font-family: 'Poppins', sans-serif; font-size: 0.98rem; font-weight: 600; color: var(--text); }
+  .chart-sub { font-size: 0.76rem; color: var(--text-2); margin-top: 2px; }
+  .chart-wrap { position: relative; height: 260px; }
+
+  .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+  .section-title { font-family: 'Poppins', 'Hind Siliguri', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .chip { background: var(--surface); color: var(--primary); padding: 5px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; border: 1px solid var(--border); }
+  .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 16px; }
+  .app-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 14px; text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: var(--shadow-sm); user-select: none; position: relative; }
+  .app-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+  .app-icon-wrap { width: 72px; height: 72px; margin: 0 auto 12px; border-radius: 18px; overflow: hidden; background: linear-gradient(135deg, #eef2ff, #f3e8ff); display: flex; align-items: center; justify-content: center; padding: 6px; }
+  [data-theme="dark"] .app-icon-wrap { background: linear-gradient(135deg, #1e2740, #2a3450); }
+  .app-icon { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; }
+  .app-name { font-size: 0.9rem; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.35; margin-bottom: 8px; min-height: 2.5em; }
+  .app-subject { font-size: 0.72rem; color: var(--primary); background: rgba(79,70,229,0.08); padding: 3px 10px; border-radius: 10px; display: inline-block; font-weight: 600; }
+  .app-card.new-highlight .app-subject { background: rgba(245,158,11,0.15); color: #b45309; }
+
+  .app-click-badge { position: absolute; top: 8px; left: 8px; background: rgba(16,185,129,0.92); color: white; padding: 3px 8px; border-radius: 10px; font-size: 0.68rem; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; z-index: 3; }
+
+  /* ═══════════════════════════════════════════════
+     🎨 নতুন প্রফেশনাল ফুটার (এক লাইনে)
+     ═══════════════════════════════════════════════ */
+  .site-footer {
+    margin-top: 40px;
+    padding: 18px 22px 16px;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(79,70,229,0.08);
+  }
+  /* উপরে অ্যানিমেটেড গ্রেডিয়েন্ট বার */
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899, #f59e0b, #10b981, #06b6d4, #6366f1);
+    background-size: 200% 100%;
+    animation: footerGradient 6s linear infinite;
+  }
+  @keyframes footerGradient {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+
+  .footer-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    font-size: 0.86rem;
+    color: var(--text-2);
+    line-height: 1.6;
+    text-align: center;
+  }
+  .footer-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: transform 0.2s;
+  }
+  .footer-item:hover { transform: translateY(-1px); }
+  .footer-item strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+  .footer-item a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.25s;
+    padding: 1px 2px;
+    border-radius: 4px;
+  }
+  .footer-item a:hover {
+    color: var(--accent);
+    text-shadow: 0 0 14px rgba(236,72,153,0.5);
+    letter-spacing: 0.3px;
+  }
+  .footer-divider {
+    color: #cbd5e1;
+    font-weight: 700;
+    opacity: 0.7;
+    font-size: 0.9rem;
+    user-select: none;
+  }
+  [data-theme="dark"] .footer-divider { color: #475569; }
+
+  /* অ্যানিমেটেড ইমোজি */
+  .footer-emoji {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+    transition: transform 0.2s;
+  }
+  .footer-item:hover .footer-emoji { transform: scale(1.15); }
+
+  /* প্রতিটি ইমোজির আলাদা অ্যানিমেশন */
+  .anim-pulse { animation: emojiPulse 2.2s ease-in-out infinite; }
+  .anim-float { animation: emojiFloat 2.8s ease-in-out infinite; }
+  .anim-wiggle { animation: emojiWiggle 3s ease-in-out infinite; }
+  .anim-ring { animation: emojiRing 2.5s ease-in-out infinite; transform-origin: 50% 30%; }
+
+  @keyframes emojiPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.18); }
+  }
+  @keyframes emojiFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-3px); }
+  }
+  @keyframes emojiWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25%      { transform: rotate(-8deg); }
+    75%      { transform: rotate(8deg); }
+  }
+  @keyframes emojiRing {
+    0%, 100% { transform: rotate(0deg); }
+    10%, 30% { transform: rotate(-14deg); }
+    20%, 40% { transform: rotate(14deg); }
+    50%      { transform: rotate(0deg); }
+  }
+
+  /* মোবাইল রেসপন্সিভ */
+  @media (max-width: 900px) {
+    .footer-line { flex-direction: column; gap: 4px; }
+    .footer-divider { display: none; }
+    .footer-item { white-space: normal; justify-content: center; text-align: center; }
+    .site-footer { padding: 16px 16px 14px; }
+  }
+  /* ═══════════════════════════════════════════════ */
+
+  .loader { text-align: center; color: var(--text-2); font-size: 0.95rem; padding: 40px 20px; grid-column: 1 / -1; }
+  .spinner { width: 42px; height: 42px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; margin: 0 auto 16px; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error-box { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; border-radius: var(--radius); padding: 20px; grid-column: 1 / -1; }
+
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
+  .overlay.active { display: block; }
+  .floating-sidebar-btn { position: fixed; left: 16px; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; cursor: pointer; display: none; align-items: center; justify-content: center; z-index: 90; }
+  body.sidebar-collapsed .floating-sidebar-btn { display: flex; }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: fixed; top: 0; left: 0; width: 270px; height: 100vh; transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0) !important; }
+    body.sidebar-collapsed .layout { grid-template-columns: 1fr; }
+    body.sidebar-collapsed .sidebar { transform: translateX(-100%); }
+    .main { padding: 16px; }
+    .charts-grid { grid-template-columns: 1fr; }
+    .page-title h1 { font-size: 1.2rem; }
+    .floating-sidebar-btn { display: none !important; }
+    .header-user-name { max-width: 60px; }
+  }
+  @media (max-width: 480px) {
+    .apps-grid, .new-apps-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+    .app-icon-wrap { width: 60px; height: 60px; }
+    .app-name { font-size: 0.82rem; }
+    .stat-value { font-size: 1.6rem; }
+    .search-box { max-width: 100%; min-width: 0; }
+    .brand-name { font-size: 0.95rem; }
+    .header-login-btn span { display: none; }
+    .header-user-name { display: none; }
+    .my-apps-list { grid-template-columns: 1fr; }
+    .stats-counters { grid-template-columns: 1fr 1fr; }
+    .approved-users-grid { grid-template-columns: 1fr; }
+    .website-links-grid { grid-template-columns: 1fr; }
+    .footer-line { font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-name">পাঠশালা প্লাস</div>
+        <div class="brand-tag">ICT Help Group • রাঙ্গুনিয়া</div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-title">শ্রেণি ও বিষয়</div>
+      <div id="classNav"></div>
+    </div>
+  </aside>
+
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <main class="main">
+
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="menu-toggle" onclick="toggleSidebar()" title="সাইডবার টগল">☰</button>
+        <div class="page-title">
+          <h1 id="pageTitle">📊 ড্যাশবোর্ড</h1>
+          <p id="pageSubtitle">সব অ্যাপ এক নজরে</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="অ্যাপ খুঁজুন...">
+        </div>
+
+        <button class="header-login-btn" id="headerLoginBtn" onclick="openLoginModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/>
+            <line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          <span>লগইন</span>
+        </button>
+
+        <button class="header-user-btn" id="headerUserBtn" onclick="openAdminModal()">
+          <div class="header-user-avatar" id="headerAvatar">?</div>
+          <span class="header-user-name" id="headerUserName">—</span>
+        </button>
+
+        <button class="icon-btn" onclick="toggleTheme()" title="থিম পরিবর্তন">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
+    </div>
+
+    <section id="homePage" class="page-section active">
+
+      <div class="hero-banner">
+        <div class="hero-content">
+          <div class="hero-badge">✨ পাঠশালা প্লাস</div>
+          <div class="hero-title">শিক্ষা হোক আনন্দের, প্রতিটি পদক্ষেপে হোক সাফল্য</div>
+          <div class="hero-motto">🎯 সার্বিক সহযোগীতায় — <strong>আইসিটি লার্নিং অ্যান্ড হেল্প হাব, রাঙ্গুনিয়া</strong></div>
+        </div>
+      </div>
+
+      <div class="notice-bar" id="noticeBar" style="display:none">
+        <div class="notice-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11l18-5v12L3 14v-3z"/>
+            <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
+          </svg>
+          <span>নোটিশ</span>
+        </div>
+        <div class="notice-track">
+          <div class="notice-scroll" id="noticeScroll"></div>
+        </div>
+      </div>
+
+      <div class="stats-dashboard-section" id="statsDashboard">
+        <div class="stats-dash-header">
+          <div class="stats-dash-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </div>
+          <div>
+            <div class="stats-dash-title">📊 ওয়েবসাইট পরিসংখ্যান</div>
+            <div class="stats-dash-subtitle">লাইভ ডেটা — </div>
+          </div>
+          <button class="btn-show-ranking" style="margin-left:auto;background:linear-gradient(135deg,#10b981,#059669);" onclick="loadStatsDashboard()">
+            <span>রিফ্রেশ</span>
+          </button>
+        </div>
+
+        <div class="stats-counters">
+          <div class="stat-counter-card">
+            <div class="stat-counter-icon green">🌐</div>
+            <div class="stat-counter-info">
+              <div class="stat-counter-label">সর্বমোট ভিজিট</div>
+              <div class="stat-counter-value" id="dashGlobalVisits">—</div>
+            </div>
+          </div>
+          <div class="stat-counter-card">
+            <div class="stat-counter-icon blue">👆</div>
+            <div class="stat-counter-info">
+              <div class="stat-counter-label">মোট অ্যাপ ক্লিক</div>
+              <div class="stat-counter-value" id="dashTotalClicks">—</div>
+            </div>
+          </div>
+          <div class="stat-counter-card">
+            <div class="stat-counter-icon orange">🔥</div>
+            <div class="stat-counter-info">
+              <div class="stat-counter-label">সক্রিয় অ্যাপ</div>
+              <div class="stat-counter-value" id="dashActiveApps">—</div>
+            </div>
+          </div>
+          <div class="stat-counter-card">
+            <div class="stat-counter-icon purple">📱</div>
+            <div class="stat-counter-info">
+              <div class="stat-counter-label">মোট অ্যাপ</div>
+              <div class="stat-counter-value" id="dashTotalApps">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="new-apps-section" id="newAppsSection" style="display:none">
+        <div class="new-apps-header">
+          <div class="new-apps-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            নতুন
+          </div>
+          <div class="new-apps-title">🆕 সদ্য যোগ হওয়া অ্যাপ</div>
+          <span class="new-apps-count" id="newAppsCount">0 টি</span>
+        </div>
+        <div class="new-apps-grid" id="newAppsGrid"></div>
+      </div>
+
+      <div class="top-apps-section">
+        <div class="top-apps-list">
+          <div class="top-apps-title">🏆 সবচেয়ে জনপ্রিয় অ্যাপ (টপ ১০)</div>
+          <div id="topAppsContainer">
+            <div class="top-apps-empty">লোড হচ্ছে...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="approved-users-section" id="approvedUsersSection">
+        <div class="approved-users-header">
+          <div class="approved-users-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div>
+            <div class="approved-users-title">👥 অনুমোদিত ব্যবহারকারী</div>
+            <div class="approved-users-subtitle">যারা অ্যাপ যোগ করার অনুমতি পেয়েছেন</div>
+          </div>
+          <span class="approved-users-count" id="approvedUsersCount">0 জন</span>
+        </div>
+
+        <div class="approved-users-grid" id="approvedUsersGrid">
+          <div class="approved-users-empty">লোড হচ্ছে...</div>
+        </div>
+      </div>
+
+      <div class="comments-section" id="commentsSection">
+        <div class="comments-header">
+          <div class="comments-title-wrap">
+            <div class="comments-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="comments-title">💬 ব্যবহারকারীর মন্তব্য</div>
+              <div class="comments-subtitle" id="commentsSubtitle">শিক্ষার্থী ও অভিভাবকদের মতামত</div>
+            </div>
+          </div>
+          <span class="comments-count" id="commentsCount">0 টি</span>
+        </div>
+
+        <div class="comment-form-toggle">
+          <button class="btn-show-form" id="showCommentBtn" onclick="toggleCommentForm()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>মন্তব্য লিখুন</span>
+          </button>
+        </div>
+
+        <div class="comment-form-box" id="commentFormBox">
+          <div class="form-title">✍️ আপনার মন্তব্য জানান</div>
+          <div class="form-row">
+            <label class="form-label" for="cName">আপনার নাম *</label>
+            <input type="text" id="cName" class="form-input" placeholder="যেমন: রাহুল হাসান" maxlength="50">
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="cComment">মন্তব্য *</label>
+            <textarea id="cComment" class="form-textarea" placeholder="আপনার মতামত লিখুন..." maxlength="500"></textarea>
+          </div>
+          <div class="form-row">
+            <label class="form-label">রেটিং (ঐচ্ছিক)</label>
+            <div class="star-rating">
+              <input type="radio" name="rating" id="r5" value="5"><label for="r5">★</label>
+              <input type="radio" name="rating" id="r4" value="4"><label for="r4">★</label>
+              <input type="radio" name="rating" id="r3" value="3"><label for="r3">★</label>
+              <input type="radio" name="rating" id="r2" value="2"><label for="r2">★</label>
+              <input type="radio" name="rating" id="r1" value="1"><label for="r1">★</label>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-submit" id="submitBtn" onclick="submitComment()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              <span>পাঠান</span>
+            </button>
+            <button class="btn-cancel" onclick="toggleCommentForm()">বাতিল</button>
+          </div>
+          <div class="form-status" id="formStatus"></div>
+        </div>
+
+        <div class="comments-track" id="commentsTrack">
+          <div class="comments-scroll" id="commentsScroll"></div>
+        </div>
+        <div class="no-comments" id="noComments" style="display:none">
+          এখনো কোনো মন্তব্য নেই। প্রথম মন্তব্য আপনিই করুন! 💬
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card purple">
+          <div class="stat-head">
+            <div class="stat-label">মোট অ্যাপ</div>
+            <div class="stat-icon purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2"/>
+                <line x1="12" y1="18" x2="12.01" y2="18"/>
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value" id="statApps">—</div>
+          <div class="stat-sub">সব মিলিয়ে</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-head">
+            <div class="stat-label">শ্রেণি</div>
+            <div class="stat-icon green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value" id="statClasses">—</div>
+          <div class="stat-sub">বিভাগ</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-head">
+            <div class="stat-label">বিষয়</div>
+            <div class="stat-icon orange">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value" id="statSubjects">—</div>
+          <div class="stat-sub">সাব-বিভাগ</div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-head">
+            <div>
+              <div class="chart-title">শ্রেণি বিতরণ</div>
+              <div class="chart-sub">ডোনাট চার্ট</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="doughnutChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-head">
+            <div>
+              <div class="chart-title">বিষয় অনুযায়ী অ্যাপ</div>
+              <div class="chart-sub">বার চার্ট</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="classPage" class="page-section">
+      <div class="class-page-header" style="display:flex;align-items:center;gap:16px;margin-bottom:22px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);flex-wrap:wrap;">
+        <button class="home-btn" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;padding:10px 18px;border-radius:10px;font-family:inherit;font-size:0.9rem;font-weight:600;cursor:pointer;" onclick="goHome()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <span>হোমে ফিরে যান</span>
+        </button>
+        <div>
+          <h2 id="classPageTitle" style="font-family:'Poppins',sans-serif;font-size:1.35rem;font-weight:700;color:var(--text);">শ্রেণি</h2>
+          <p id="classPageSubtitle" style="font-size:0.88rem;color:var(--text-2);"></p>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div class="section-title" id="classSectionTitle">📱 অ্যাপ তালিকা</div>
+        <span class="chip" id="classChipCount">0 টি</span>
+      </div>
+
+      <div class="apps-grid" id="classAppsGrid">
+        <div class="loader"><div class="spinner"></div>লোড হচ্ছে...</div>
+      </div>
+    </section>
+
+    <section id="allAppsSection" class="page-section">
+      <div class="section-head">
+        <div class="section-title" id="sectionTitle">📱 সব অ্যাপ</div>
+        <span class="chip" id="chipCount">0 টি</span>
+      </div>
+      <div class="apps-grid" id="appsGrid">
+        <div class="loader"><div class="spinner"></div>লোড হচ্ছে...</div>
+      </div>
+    </section>
+
+    <section class="website-links-section" id="websiteLinksSection" style="display:none">
+      <div class="website-links-header">
+        <div class="website-links-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+        </div>
+        <div>
+          <div class="website-links-title">🌐 গুরুত্বপূর্ণ ওয়েবসাইট</div>
+          <div class="website-links-subtitle">প্রয়োজনীয় সব লিংক এক জায়গায়</div>
+        </div>
+        <span class="website-links-count" id="websiteLinksCount">0 টি</span>
+      </div>
+      <div class="website-links-grid" id="websiteLinksGrid"></div>
+    </section>
+
+    <!-- ═══════════════ 🎨 নতুন এক-লাইন প্রফেশনাল ফুটার ═══════════════ -->
+    <footer class="site-footer">
+      <div class="footer-line">
+        <span class="footer-item">
+          <span class="footer-emoji anim-pulse">🎓</span>
+          <strong>পাঠশালা প্লাস</strong> — শিক্ষা হোক আনন্দের
+        </span>
+        <span class="footer-divider">●</span>
+        <span class="footer-item">
+          <span class="footer-emoji anim-float">🤝</span>
+          সার্বিক সহযোগীতায়: <strong>আইসিটি লার্নিং অ্যান্ড হেল্প হাব, রাঙ্গুনিয়া</strong>
+        </span>
+        <span class="footer-divider">●</span>
+        <span class="footer-item">
+          <span class="footer-emoji anim-wiggle">💻</span>
+          প্রোগ্রাম ডিজাইনে: <strong>মোঃ সাইফুল্লাহ সরোয়ার</strong>
+        </span>
+        <span class="footer-divider">●</span>
+        <span class="footer-item">
+          <span class="footer-emoji anim-ring">📞</span>
+          <a href="tel:01817705067">01817-705067</a>
+        </span>
+      </div>
+    </footer>
+    <!-- ═════════════════════════════════════════════════════════════ -->
+  </main>
+</div>
+
+<!-- লগইন মডাল -->
+<div class="login-modal-overlay" id="loginModalOverlay">
+  <div class="login-modal" onclick="event.stopPropagation()">
+    <div class="login-modal-header">
+      <button class="modal-close-x" onclick="closeLoginModal()">✕</button>
+      <div class="login-modal-header-content">
+        <div class="login-modal-badge">✨ পাঠশালা প্লাস</div>
+        <div class="login-modal-title">🔐 অ্যাডমিন লগইন</div>
+        <div class="login-modal-subtitle">শুধুমাত্র অনুমোদিত ইউজাররা প্রবেশ করতে পারবেন</div>
+      </div>
+    </div>
+    <div class="login-modal-body">
+      <div class="login-form-field">
+        <label for="loginUser">UserId</label>
+        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <input type="text" id="loginUser" placeholder="আপনার UserId লিখুন" autocomplete="username">
+      </div>
+      <div class="login-form-field">
+        <label for="loginPass">Password</label>
+        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <div class="password-wrap">
+          <input type="password" id="loginPass" placeholder="আপনার Password লিখুন" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+          <button type="button" class="password-toggle-btn" id="passwordToggleBtn" onclick="togglePasswordVisibility()">
+            <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <button class="login-submit-btn" id="loginBtn" onclick="doLogin()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+          <polyline points="10 17 15 12 10 7"/>
+          <line x1="15" y1="12" x2="3" y2="12"/>
+        </svg>
+        <span>লগইন করুন</span>
+      </button>
+      <div class="auth-status" id="loginStatus"></div>
+      <div class="login-modal-footer">🎓 <strong>ICT Help Group, Rangunia</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- অ্যাডমিন মডাল -->
+<div class="admin-modal-overlay" id="adminModalOverlay">
+  <div class="admin-modal" onclick="event.stopPropagation()">
+    <div class="admin-modal-header">
+      <button class="modal-close-x" onclick="closeAdminModal()">✕</button>
+      <div class="admin-header-avatar" id="modalAdminAvatar">?</div>
+      <div class="admin-header-info">
+        <h2 id="modalAdminName">—</h2>
+        <p id="modalAdminId">🆔 —</p>
+      </div>
+      <span class="admin-header-badge">✓ অনুমোদিত</span>
+      <button class="admin-logout-btn" onclick="doLogout()">লগআউট</button>
+    </div>
+    <div class="admin-modal-body">
+      <div class="admin-section-title">🛠️ নতুন অ্যাপ যোগ করুন</div>
+      <div class="admin-form-grid">
+        <div class="admin-field"><label>অ্যাপের নাম *</label><input type="text" id="aName" maxlength="60"></div>
+        <div class="admin-field"><label>লিংক (URL) *</label><input type="url" id="aLink"></div>
+        <div class="admin-field"><label>আইকন URL (ঐচ্ছিক)</label><input type="url" id="aIcon"></div>
+        <div class="admin-field"><label>শ্রেণি *</label><input type="text" id="aClass" list="classList2" maxlength="30"><datalist id="classList2"></datalist></div>
+        <div class="admin-field"><label>বিষয় *</label><input type="text" id="aSubject" list="subjectList2" maxlength="30"><datalist id="subjectList2"></datalist></div>
+      </div>
+      <label class="admin-check"><input type="checkbox" id="aNew"> 🆕 "নতুন" হিসেবে চিহ্নিত করুন</label>
+      <div class="admin-actions-row">
+        <button class="admin-primary-btn" id="addAppBtn" onclick="submitNewApp()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <span>অ্যাপ যোগ করুন</span>
+        </button>
+        <button class="admin-secondary-btn" onclick="clearAppForm()">ফর্ম পরিষ্কার</button>
+      </div>
+      <div class="auth-status" id="addAppStatus"></div>
+
+      <div class="my-apps-section">
+        <div class="my-apps-header">
+          <div class="my-apps-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="my-apps-title">📂 আমার আপলোড করা অ্যাপ</div>
+            <div class="my-apps-subtitle" id="myAppsSubtitle">আপনার যোগ করা সব অ্যাপ</div>
+          </div>
+          <button class="btn-show-my-apps" onclick="toggleMyApps()" id="toggleMyAppsBtn"><span>দেখুন</span></button>
+        </div>
+        <div class="my-apps-box" id="myAppsBox">
+          <div class="my-apps-stats" id="myAppsStats"></div>
+          <div class="my-apps-list" id="myAppsList"></div>
+        </div>
+      </div>
+
+      <div class="ranking-section">
+        <div class="ranking-header">
+          <div class="ranking-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/>
+              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+            </svg>
+          </div>
+          <div>
+            <div class="ranking-title">🏆 ইউজার র‍্যাংকিং</div>
+            <div class="ranking-subtitle" id="rankingSubtitle">কে সবচেয়ে বেশি অ্যাপ যোগ করেছে</div>
+          </div>
+          <button class="btn-show-ranking" onclick="toggleRanking()" id="toggleRankingBtn"><span>দেখুন</span></button>
+        </div>
+        <div class="ranking-box" id="rankingBox">
+          <div class="ranking-list" id="rankingList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- এডিট মডাল -->
+<div class="edit-modal-overlay" id="editModalOverlay">
+  <div class="edit-modal">
+    <div class="edit-modal-header">
+      <div class="edit-modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </div>
+      <div class="edit-modal-title">✏️ অ্যাপ এডিট করুন</div>
+      <button class="btn-close-modal" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="edit-form-row"><label>নাম *</label><input type="text" id="eName" maxlength="60"></div>
+    <div class="edit-form-row"><label>লিংক *</label><input type="url" id="eLink"></div>
+    <div class="edit-form-row"><label>আইকন URL</label><input type="url" id="eIcon"></div>
+    <div class="edit-form-row"><label>শ্রেণি *</label><input type="text" id="eClass" maxlength="30"></div>
+    <div class="edit-form-row"><label>বিষয় *</label><input type="text" id="eSubject" maxlength="30"></div>
+    <label class="admin-check" style="margin-top:8px"><input type="checkbox" id="eNew"> 🆕 "নতুন" হিসেবে চিহ্নিত করুন</label>
+    <div class="admin-actions-row" style="margin-top:16px">
+      <button class="admin-primary-btn" id="saveEditBtn" onclick="saveEdit()"><span>সংরক্ষণ করুন</span></button>
+      <button class="admin-secondary-btn" onclick="closeEditModal()">বাতিল</button>
+    </div>
+    <div class="auth-status" id="editStatus"></div>
+  </div>
+</div>
+
+<button class="floating-sidebar-btn" onclick="toggleSidebar()">☰</button>
+
+<script>
+  window.__chartReady = false;
+  (function() {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+    s.onload = () => { window.__chartReady = true; console.log('✅ Chart.js loaded'); if (window.__pendingChart) window.__pendingChart(); };
+    s.onerror = () => console.warn('⚠️ Chart.js লোড হয়নি');
+    document.head.appendChild(s);
+  })();
+</script>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQ3FyxnWwNEKYWXBGBNU9B7_KG24lTFbEWvT4IRALg4CJF572pQPRcf8dzqNlIZY4/exec';
+const SHEET_ID = '1jjyZnBPD3aPLQmGNSnCtViR4jwyj5VI9m7sTi3Mnhtk';
+const SHEET_NAME = 'Sheet1';
+const COMMENTS_SHEET = 'Sheet2';
+
+const LINK_CLASSES = new Set([
+  'লিংক', 'লিংকসমূহ', 'লিঙ্ক', 'ওয়েবসাইট', 'ওয়েব সাইট',
+  'link', 'links', 'website', 'websites', 'web'
+]);
+
+let allApps = [];
+let websiteLinks = [];
+let currentClass = 'all';
+let currentSubject = 'all';
+let searchQuery = '';
+let loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser') || 'null');
+let editingRowIndex = null;
+
+const CLASS_ICONS = { 'গেম': '🎮', 'শিক্ষা': '📚', 'টুলস': '🛠️', 'সোশ্যাল': '💬', 'ভিডিও': '🎬', 'মিউজিক': '🎵', 'শপিং': '🛒', 'অন্যান্য': '📦' };
+function getClassIcon(name) { return CLASS_ICONS[name] || '📁'; }
+
+function isLinkCategory(cat) {
+  const c = (cat || '').toString().trim().toLowerCase();
+  return LINK_CLASSES.has(c);
+}
+
+/* ═══════ প্রফেশনাল SVG আইকন ═══════ */
+function getHomeIcon() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+    <polyline points="9 22 9 12 15 12 15 22"/>
+  </svg>`;
+}
+function getFolderIcon(isOpen) {
+  if (isOpen) {
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 14l1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v2"/>
+    </svg>`;
+  }
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+  </svg>`;
+}
+function getFileIcon() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+  </svg>`;
+}
+function getListIcon() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="8" y1="6" x2="21" y2="6"/>
+    <line x1="8" y1="12" x2="21" y2="12"/>
+    <line x1="8" y1="18" x2="21" y2="18"/>
+    <line x1="3" y1="6" x2="3.01" y2="6"/>
+    <line x1="3" y1="12" x2="3.01" y2="12"/>
+    <line x1="3" y1="18" x2="3.01" y2="18"/>
+  </svg>`;
+}
+function getChevronSvg() {
+  return `<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="9 18 15 12 9 6"/>
+  </svg>`;
+}
+
+function togglePasswordVisibility() {
+  const passInput = document.getElementById('loginPass');
+  const eyeIcon = document.getElementById('eyeIcon');
+  if (passInput.type === 'password') {
+    passInput.type = 'text';
+    eyeIcon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+  } else {
+    passInput.type = 'password';
+    eyeIcon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+  }
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('themeIcon').textContent = saved === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  document.getElementById('themeIcon').textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', next);
+  if (window.__chartReady) initCharts();
+}
+
+function toggleSidebar() {
+  const isMobile = window.innerWidth < 900;
+  if (isMobile) {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('active');
+  } else {
+    document.body.classList.toggle('sidebar-collapsed');
+  }
+}
+function closeSidebar() {
+  if (window.innerWidth < 900) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('active');
+  }
+}
+
+function loadSheetData() {
+  const cb = 'sheetCb_' + Date.now();
+  let done = false;
+  window[cb] = function(json) {
+    if (done) return; done = true;
+    console.log('📦 Sheet1 loaded');
+    if (json.status === 'error') { showError(json.errors?.[0]?.detailed_message || 'Sheets API error'); cleanup(); return; }
+    if (!json.table || !json.table.rows) { showError('শীটে ডেটা নেই।'); cleanup(); return; }
+    console.log('✅ হেডার:', json.table.cols.map(c => c.label));
+    parseData(json.table);
+    cleanup();
+  };
+  function cleanup() {
+    const s = document.getElementById(cb);
+    if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  }
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:${cb}&sheet=${encodeURIComponent(SHEET_NAME)}&headers=1`;
+  const script = document.createElement('script');
+  script.id = cb; script.src = url;
+  script.onerror = function() { if (done) return; done = true; showError('ডেটা আনা যায়নি।'); cleanup(); };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done && window[cb]) { done = true; showError('Timeout'); cleanup(); } }, 12000);
+}
+
+function loadComments() {
+  const cb = 'commentCb_' + Date.now();
+  let done = false;
+  window[cb] = function(json) {
+    if (done) return; done = true;
+    if (json.status === 'error' || !json.table || !json.table.rows) { showNoComments(); cleanup(); return; }
+    parseComments(json.table);
+    cleanup();
+  };
+  function cleanup() {
+    const s = document.getElementById(cb);
+    if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  }
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:${cb}&sheet=${encodeURIComponent(COMMENTS_SHEET)}&headers=1`;
+  const script = document.createElement('script');
+  script.id = cb; script.src = url;
+  script.onerror = function() { if (done) return; done = true; showNoComments(); cleanup(); };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done && window[cb]) { done = true; showNoComments(); cleanup(); } }, 12000);
+}
+
+function showNoComments() {
+  document.getElementById('commentsTrack').style.display = 'none';
+  document.getElementById('noComments').style.display = 'block';
+  document.getElementById('commentsCount').textContent = '0 টি';
+  document.getElementById('commentsSubtitle').textContent = 'এখনো কোনো মন্তব্য নেই';
+}
+
+function parseComments(table) {
+  const rows = table.rows || [];
+  const iName    = getColIndex(table, 'Name');
+  const iComment = getColIndex(table, 'Comment');
+  const iDate    = getColIndex(table, 'Date');
+  const iRating  = getColIndex(table, 'Rating');
+
+  const comments = rows.map(row => {
+    const c = row.c || [];
+    const getVal = i => (i >= 0 && c[i]) ? (c[i].v || c[i].f || '') : '';
+    return {
+      name:    (getVal(iName) || 'অজ্ঞাত').toString().trim(),
+      comment: (getVal(iComment) || '').toString().trim(),
+      date:    (getVal(iDate) || '').toString().trim(),
+      rating:  parseInt((getVal(iRating) || '0').toString(), 10) || 0
+    };
+  }).filter(c => c.comment);
+  renderComments(comments);
+}
+
+function renderComments(comments) {
+  const track = document.getElementById('commentsTrack');
+  const noComments = document.getElementById('noComments');
+  const scroller = document.getElementById('commentsScroll');
+  const countEl = document.getElementById('commentsCount');
+  const subtitle = document.getElementById('commentsSubtitle');
+
+  if (!comments || comments.length === 0) { showNoComments(); return; }
+
+  track.style.display = 'block';
+  noComments.style.display = 'none';
+  countEl.textContent = comments.length + ' টি';
+  subtitle.textContent = `${comments.length} জন ব্যবহারকারীর মতামত`;
+
+  const buildCards = (list) => list.map(c => {
+    const initial = (c.name.charAt(0) || '?').toUpperCase();
+    const stars = c.rating > 0 ? '⭐'.repeat(Math.min(c.rating, 5)) : '';
+    const dateStr = c.date ? formatCommentDate(c.date) : '';
+    return `<div class="comment-card"><div class="comment-head"><div class="comment-avatar">${initial}</div><div><div class="comment-name">${c.name}</div>${dateStr ? `<div class="comment-date">📅 ${dateStr}</div>` : ''}</div></div><div class="comment-body">${c.comment}</div>${stars ? `<div class="comment-rating">${stars}</div>` : ''}</div>`;
+  }).join('');
+
+  const cardsHtml = buildCards(comments);
+  if (comments.length < 3) scroller.innerHTML = cardsHtml.repeat(4);
+  else scroller.innerHTML = cardsHtml + cardsHtml;
+
+  const duration = Math.max(30, Math.min(90, comments.length * 6));
+  scroller.style.animationDuration = duration + 's';
+}
+
+function formatCommentDate(dateStr) {
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const months = ['জানু','ফেব','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগ','সেপ','অক্টো','নভে','ডিসে'];
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  } catch(e) { return dateStr; }
+}
+
+function toggleCommentForm() {
+  const box = document.getElementById('commentFormBox');
+  const showBtn = document.getElementById('showCommentBtn');
+  if (box.classList.contains('show')) {
+    box.classList.remove('show');
+    showBtn.style.display = 'inline-flex';
+  } else {
+    box.classList.add('show');
+    showBtn.style.display = 'none';
+    setTimeout(() => document.getElementById('cName').focus(), 200);
+  }
+}
+
+function submitComment() {
+  const nameEl = document.getElementById('cName');
+  const commentEl = document.getElementById('cComment');
+  const ratingEl = document.querySelector('input[name="rating"]:checked');
+  const statusEl = document.getElementById('formStatus');
+  const submitBtn = document.getElementById('submitBtn');
+
+  const name = nameEl.value.trim();
+  const comment = commentEl.value.trim();
+  const rating = ratingEl ? parseInt(ratingEl.value, 10) : 0;
+
+  if (!name || name.length < 2) { showFormStatus('error', '⚠️ নাম লিখুন।'); nameEl.focus(); return; }
+  if (!comment || comment.length < 5) { showFormStatus('error', '⚠️ মন্তব্য লিখুন।'); commentEl.focus(); return; }
+
+  submitBtn.disabled = true;
+  submitBtn.querySelector('span').textContent = 'পাঠানো হচ্ছে...';
+  showFormStatus('success', '⏳ পাঠানো হচ্ছে...');
+
+  const cb = 'commentCb_' + Date.now();
+  let done = false;
+  window[cb] = function(res) {
+    if (done) return; done = true;
+    submitBtn.disabled = false;
+    submitBtn.querySelector('span').textContent = 'পাঠান';
+
+    if (res && res.success) {
+      showFormStatus('success', '✅ ধন্যবাদ!');
+      nameEl.value = ''; commentEl.value = '';
+      document.querySelectorAll('input[name="rating"]').forEach(r => r.checked = false);
+      setTimeout(() => { loadComments(); toggleCommentForm(); statusEl.style.display = 'none'; }, 2000);
+    } else {
+      showFormStatus('error', '❌ ' + ((res && res.error) || 'পাঠানো যায়নি'));
+    }
+    const s = document.getElementById(cb); if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  };
+
+  const params = new URLSearchParams({ action: 'add', name, comment, rating, callback: cb });
+  const script = document.createElement('script');
+  script.id = cb; script.src = SCRIPT_URL + '?' + params.toString();
+  script.onerror = function() {
+    if (done) return; done = true;
+    submitBtn.disabled = false; submitBtn.querySelector('span').textContent = 'পাঠান';
+    showFormStatus('error', '❌ নেটওয়ার্ক সমস্যা');
+    const s = document.getElementById(cb); if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done) { done = true; submitBtn.disabled = false; submitBtn.querySelector('span').textContent = 'পাঠান'; showFormStatus('error', '⏱️ সময় শেষ'); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} } }, 20000);
+}
+
+function showFormStatus(type, msg) {
+  const el = document.getElementById('formStatus');
+  el.className = 'form-status ' + type;
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function openLoginModal() {
+  if (loggedInUser) { openAdminModal(); return; }
+  document.getElementById('loginModalOverlay').classList.add('show');
+  document.getElementById('loginStatus').style.display = 'none';
+  document.getElementById('loginPass').type = 'password';
+  setTimeout(() => document.getElementById('loginUser').focus(), 200);
+}
+function closeLoginModal() { document.getElementById('loginModalOverlay').classList.remove('show'); }
+function openAdminModal() {
+  if (!loggedInUser) { openLoginModal(); return; }
+  document.getElementById('modalAdminAvatar').textContent = (loggedInUser.name || '?').charAt(0).toUpperCase();
+  document.getElementById('modalAdminName').textContent = loggedInUser.name;
+  document.getElementById('modalAdminId').textContent = '🆔 ' + loggedInUser.userId;
+  document.getElementById('adminModalOverlay').classList.add('show');
+  populateClassSubjectLists();
+}
+function closeAdminModal() { document.getElementById('adminModalOverlay').classList.remove('show'); }
+
+function updateHeaderButtons() {
+  const loginBtn = document.getElementById('headerLoginBtn');
+  const userBtn = document.getElementById('headerUserBtn');
+  if (loggedInUser) {
+    loginBtn.style.display = 'none';
+    userBtn.classList.add('show');
+    document.getElementById('headerAvatar').textContent = (loggedInUser.name || '?').charAt(0).toUpperCase();
+    document.getElementById('headerUserName').textContent = loggedInUser.name;
+  } else {
+    loginBtn.style.display = 'inline-flex';
+    userBtn.classList.remove('show');
+  }
+}
+
+function doLogin() {
+  const userEl = document.getElementById('loginUser');
+  const passEl = document.getElementById('loginPass');
+  const btn = document.getElementById('loginBtn');
+
+  const userId = userEl.value.trim();
+  const password = passEl.value.trim();
+
+  if (!userId) { showLoginStatus('error', '⚠️ UserId লিখুন।'); userEl.focus(); return; }
+  if (!password) { showLoginStatus('error', '⚠️ Password লিখুন।'); passEl.focus(); return; }
+
+  btn.disabled = true;
+  btn.querySelector('span').textContent = 'লগইন হচ্ছে...';
+  showLoginStatus('success', '⏳ যাচাই করা হচ্ছে...');
+
+  const cb = 'loginCb_' + Date.now();
+  let done = false;
+  window[cb] = function(res) {
+    if (done) return; done = true;
+    btn.disabled = false; btn.querySelector('span').textContent = 'লগইন করুন';
+
+    if (res && res.success) {
+      loggedInUser = { userId: res.userId, name: res.name || res.userId, password };
+      sessionStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+      showLoginStatus('success', '✅ ' + res.message);
+      setTimeout(() => { closeLoginModal(); updateHeaderButtons(); openAdminModal(); populateClassSubjectLists(); }, 600);
+    } else {
+      showLoginStatus('error', '❌ ' + ((res && res.error) || 'লগইন ব্যর্থ'));
+    }
+    const s = document.getElementById(cb); if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  };
+
+  const url = SCRIPT_URL + '?action=login&userId=' + encodeURIComponent(userId) + '&password=' + encodeURIComponent(password) + '&callback=' + cb;
+  const script = document.createElement('script');
+  script.id = cb; script.src = url;
+  script.onerror = function() { if (done) return; done = true; btn.disabled = false; btn.querySelector('span').textContent = 'লগইন করুন'; showLoginStatus('error', '❌ নেটওয়ার্ক সমস্যা'); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done) { done = true; btn.disabled = false; btn.querySelector('span').textContent = 'লগইন করুন'; showLoginStatus('error', '⏱️ সময় শেষ'); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} } }, 15000);
+}
+
+function showLoginStatus(type, msg) {
+  const el = document.getElementById('loginStatus');
+  el.className = 'auth-status ' + type;
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function doLogout() {
+  loggedInUser = null;
+  sessionStorage.removeItem('loggedInUser');
+  closeLoginModal(); closeAdminModal();
+  updateHeaderButtons();
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+function populateClassSubjectLists() {
+  const classList = document.getElementById('classList2');
+  const subjectList = document.getElementById('subjectList2');
+  if (!classList || !subjectList) return;
+  classList.innerHTML = [...new Set(allApps.map(a => a.category))].sort().map(c => `<option value="${c}">`).join('');
+  subjectList.innerHTML = [...new Set(allApps.map(a => a.subject))].sort().map(s => `<option value="${s}">`).join('');
+}
+
+function submitNewApp() {
+  if (!loggedInUser) { showAddAppStatus('error', '⛔ লগইন করুন।'); return; }
+
+  const name = document.getElementById('aName').value.trim();
+  const link = document.getElementById('aLink').value.trim();
+  const icon = document.getElementById('aIcon').value.trim();
+  const cls = document.getElementById('aClass').value.trim();
+  const subject = document.getElementById('aSubject').value.trim();
+  const newApp = document.getElementById('aNew').checked ? 'yes' : '';
+  const btn = document.getElementById('addAppBtn');
+
+  if (!name || !link || !cls || !subject) { showAddAppStatus('error', '⚠️ সব ঘর পূরণ করুন'); return; }
+  if (!/^https?:\/\//i.test(link)) { showAddAppStatus('error', '⚠️ লিংক https:// দিয়ে শুরু'); return; }
+
+  btn.disabled = true;
+  btn.querySelector('span').textContent = 'যোগ করা হচ্ছে...';
+  showAddAppStatus('success', '⏳ পাঠানো হচ্ছে...');
+
+  const cb = 'addAppCb_' + Date.now();
+  let done = false;
+  window[cb] = function(res) {
+    if (done) return; done = true;
+    btn.disabled = false; btn.querySelector('span').textContent = 'অ্যাপ যোগ করুন';
+
+    if (res && res.success) {
+      showAddAppStatus('success', '✅ ' + (res.message || 'সফল'));
+      clearAppForm();
+      setTimeout(() => {
+        loadSheetData();
+        loadStatsDashboard();
+        loadApprovedUsers();
+        setTimeout(populateClassSubjectLists, 1500);
+      }, 1000);
+      setTimeout(() => { document.getElementById('addAppStatus').style.display = 'none'; }, 4000);
+    } else {
+      showAddAppStatus('error', '❌ ' + ((res && res.error) || 'ব্যর্থ'));
+    }
+    const s = document.getElementById(cb); if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  };
+
+  const params = new URLSearchParams({ action: 'addApp', userId: loggedInUser.userId, password: loggedInUser.password, name, link, icon, cls, subject, newApp, callback: cb });
+  const script = document.createElement('script');
+  script.id = cb; script.src = SCRIPT_URL + '?' + params.toString();
+  script.onerror = function() { if (done) return; done = true; btn.disabled = false; btn.querySelector('span').textContent = 'অ্যাপ যোগ করুন'; showAddAppStatus('error', '❌ নেটওয়ার্ক'); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done) { done = true; btn.disabled = false; btn.querySelector('span').textContent = 'অ্যাপ যোগ করুন'; showAddAppStatus('error', '⏱️ সময় শেষ'); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} } }, 20000);
+}
+
+function showAddAppStatus(type, msg) {
+  const el = document.getElementById('addAppStatus');
+  el.className = 'auth-status ' + type;
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function clearAppForm() {
+  ['aName','aLink','aIcon','aClass','aSubject'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('aNew').checked = false;
+}
+
+function toggleMyApps() {
+  const box = document.getElementById('myAppsBox');
+  const btn = document.getElementById('toggleMyAppsBtn');
+  if (box.classList.contains('show')) { box.classList.remove('show'); btn.querySelector('span').textContent = 'দেখুন'; }
+  else { box.classList.add('show'); btn.querySelector('span').textContent = 'লুকান'; renderMyApps(); }
+}
+
+function renderMyApps() {
+  if (!loggedInUser) return;
+  const listEl = document.getElementById('myAppsList');
+  const statsEl = document.getElementById('myAppsStats');
+  const subtitleEl = document.getElementById('myAppsSubtitle');
+
+  const myApps = allApps.filter(a => a.userId && a.userId.toLowerCase() === loggedInUser.userId.toLowerCase());
+
+  if (subtitleEl) subtitleEl.textContent = myApps.length > 0 ? `${myApps.length}টি অ্যাপ যোগ করেছেন` : 'এখনো কোনো অ্যাপ যোগ করেননি';
+
+  const classCount = [...new Set(myApps.map(a => a.category))].length;
+  const subjectCount = [...new Set(myApps.map(a => a.subject))].length;
+  const newCount = myApps.filter(a => a.isNew).length;
+
+  statsEl.innerHTML = `
+    <span class="my-stat-chip">📱 মোট: <strong>${myApps.length}</strong></span>
+    <span class="my-stat-chip">📂 শ্রেণি: <strong>${classCount}</strong></span>
+    <span class="my-stat-chip">📖 বিষয়: <strong>${subjectCount}</strong></span>
+    <span class="my-stat-chip">🆕 নতুন: <strong>${newCount}</strong></span>
+    ${myApps.length > 0 ? `<button class="btn-csv" onclick="downloadMyAppsCSV()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> CSV</button>` : ''}
+  `;
+
+  if (myApps.length === 0) { listEl.innerHTML = `<div class="my-apps-empty">📭 কোনো অ্যাপ নেই।</div>`; return; }
+
+  listEl.innerHTML = '';
+  myApps.sort((a, b) => (b.rowIndex || 0) - (a.rowIndex || 0)).forEach(app => {
+    const item = document.createElement('div');
+    item.className = 'my-app-item';
+    const iconUrl = app.icon || 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#g)"/><text x="32" y="42" font-size="28" text-anchor="middle" fill="white">📱</text></svg>`);
+    item.innerHTML = `
+      <a class="my-app-clickable" href="${app.link}" target="_blank" rel="noopener">
+        <img class="my-app-icon" src="${iconUrl}" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%23a855f7'/><text x='32' y='42' font-size='28' text-anchor='middle' fill='white'>📱</text></svg>`)}'">
+        <div class="my-app-info">
+          <div class="my-app-name">${app.name}</div>
+          <div class="my-app-meta"><span>${app.category}</span><span>${app.subject}</span>${app.isNew ? '<span style="background:#fef3c7;color:#92400e">🆕</span>' : ''}${(app.clicks||0)>0?`<span style="background:#d1fae5;color:#065f46">👆 ${app.clicks}</span>`:''}</div>
+        </div>
+      </a>
+      <div class="my-app-actions">
+        <button class="btn-icon-action btn-edit-app" onclick="openEditModal(${app.rowIndex})">✏️</button>
+        <button class="btn-icon-action btn-delete-app" onclick="deleteApp(${app.rowIndex}, '${app.name.replace(/'/g, "\\'")}')">🗑️</button>
+      </div>
+    `;
+    listEl.appendChild(item);
+  });
+}
+
+function downloadMyAppsCSV() {
+  if (!loggedInUser) return;
+  const myApps = allApps.filter(a => a.userId && a.userId.toLowerCase() === loggedInUser.userId.toLowerCase());
+  if (myApps.length === 0) return alert('কোনো অ্যাপ নেই');
+  const headers = ['Name','Link','Icon','Class','Subject','New','Clicks','UserId'];
+  const rows = myApps.map(a => [a.name, a.link, a.icon, a.category, a.subject, a.isNew?'yes':'', a.clicks||0, loggedInUser.userId]);
+  const csv = '\uFEFF' + [headers.join(','), ...rows.map(r => r.map(x => '"' + String(x||'').replace(/"/g,'""') + '"').join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `my-apps-${loggedInUser.userId}.csv`;
+  a.click();
+}
+
+function toggleRanking() {
+  const box = document.getElementById('rankingBox');
+  const btn = document.getElementById('toggleRankingBtn');
+  if (box.classList.contains('show')) { box.classList.remove('show'); btn.querySelector('span').textContent = 'দেখুন'; }
+  else { box.classList.add('show'); btn.querySelector('span').textContent = 'লুকান'; loadRanking(); }
+}
+
+function loadRanking() {
+  const listEl = document.getElementById('rankingList');
+  listEl.innerHTML = '<div class="loader"><div class="spinner"></div>লোড হচ্ছে...</div>';
+
+  const cb = 'rankCb_' + Date.now();
+  let done = false;
+  window[cb] = function(res) {
+    if (done) return; done = true;
+    if (res && res.success && res.ranking) renderRanking(res.ranking);
+    else buildLocalRanking();
+    const s = document.getElementById(cb); if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  };
+  const script = document.createElement('script');
+  script.id = cb; script.src = SCRIPT_URL + '?action=getRanking&callback=' + cb;
+  script.onerror = function() { if (done) return; done = true; buildLocalRanking(); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done) { done = true; buildLocalRanking(); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} } }, 8000);
+}
+
+function buildLocalRanking() {
+  const counts = {};
+  allApps.forEach(a => {
+    if (!a.userId) return;
+    const k = a.userId.toLowerCase();
+    if (!counts[k]) counts[k] = { userId: a.userId, name: a.userId, count: 0 };
+    counts[k].count++;
+  });
+  if (loggedInUser) {
+    const k = loggedInUser.userId.toLowerCase();
+    if (counts[k]) counts[k].name = loggedInUser.name;
+  }
+  renderRanking(Object.values(counts).sort((a, b) => b.count - a.count));
+}
+
+function renderRanking(ranking) {
+  const listEl = document.getElementById('rankingList');
+  const subtitleEl = document.getElementById('rankingSubtitle');
+  if (!ranking || ranking.length === 0) { listEl.innerHTML = '<div class="ranking-empty">এখনো কেউ অ্যাপ যোগ করেনি</div>'; return; }
+  if (subtitleEl) subtitleEl.textContent = `মোট ${ranking.length} জন অবদানকারী`;
+
+  const curId = (loggedInUser && loggedInUser.userId) ? loggedInUser.userId.toLowerCase() : '';
+  const medals = ['🥇', '🥈', '🥉'];
+
+  listEl.innerHTML = ranking.map((r, i) => {
+    const isMe = r.userId.toLowerCase() === curId;
+    const rankClass = i < 3 ? `rank-${i + 1}` : '';
+    const pos = i < 3 ? medals[i] : (i + 1);
+    return `<div class="rank-item ${rankClass} ${isMe ? 'me' : ''}"><div class="rank-position">${pos}</div><div class="rank-avatar">${(r.name || '?').charAt(0).toUpperCase()}</div><div class="rank-info"><div class="rank-name">${r.name}${isMe ? '<span class="rank-you-badge">আপনি</span>' : ''}</div><div class="rank-userid">🆔 ${r.userId}</div></div><div class="rank-count">📱 ${r.count}</div></div>`;
+  }).join('');
+}
+
+function loadApprovedUsers() {
+  const grid = document.getElementById('approvedUsersGrid');
+  const countEl = document.getElementById('approvedUsersCount');
+  if (!grid) return;
+  grid.innerHTML = '<div class="approved-users-empty">লোড হচ্ছে...</div>';
+
+  const cb = 'usersCb_' + Date.now();
+  let done = false;
+  window[cb] = function(res) {
+    if (done) return; done = true;
+    console.log('👥 Users Response:', res);
+    if (res && res.success && res.users && res.users.length > 0) renderApprovedUsers(res.users, countEl);
+    else buildLocalUsers(countEl);
+    const s = document.getElementById(cb); if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  };
+  const script = document.createElement('script');
+  script.id = cb; script.src = SCRIPT_URL + '?action=getUsers&callback=' + cb;
+  script.onerror = function() { if (done) return; done = true; buildLocalUsers(countEl); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done) { done = true; buildLocalUsers(countEl); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} } }, 5000);
+}
+
+function buildLocalUsers(countEl) {
+  const userMap = {};
+  allApps.forEach(a => {
+    if (!a.userId) return;
+    const k = a.userId.toLowerCase();
+    if (!userMap[k]) userMap[k] = { userId: a.userId, name: a.userId, appCount: 0 };
+    userMap[k].appCount++;
+  });
+  if (loggedInUser) {
+    const k = loggedInUser.userId.toLowerCase();
+    if (!userMap[k]) userMap[k] = { userId: loggedInUser.userId, name: loggedInUser.name, appCount: 0 };
+    else userMap[k].name = loggedInUser.name;
+  }
+  renderApprovedUsers(Object.values(userMap).sort((a, b) => b.appCount - a.appCount), countEl);
+}
+
+function renderApprovedUsers(users, countEl) {
+  const grid = document.getElementById('approvedUsersGrid');
+  console.log('🎨 Rendering', users ? users.length : 0, 'users');
+
+  if (!users || users.length === 0) {
+    grid.innerHTML = '<div class="approved-users-empty">⚠️ কোনো ব্যবহারকারী পাওয়া যায়নি</div>';
+    if (countEl) countEl.textContent = '0 জন';
+    return;
+  }
+
+  if (countEl) countEl.textContent = users.length + ' জন';
+
+  const curName = (loggedInUser && loggedInUser.name) ? loggedInUser.name.toLowerCase().trim() : '';
+  let html = '';
+
+  users.forEach(u => {
+    const displayName = u.name || u.userId || '—';
+    const initial = displayName.charAt(0).toUpperCase();
+    const isMe = displayName.toLowerCase().trim() === curName;
+    const avatarStyle = isMe ? 'background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 2px 8px rgba(16,185,129,0.35)' : '';
+    const youBadge = isMe ? '<span style="background:#10b981;color:white;padding:1px 6px;border-radius:6px;font-size:0.6rem;margin-left:4px">আপনি</span>' : '';
+
+    html += '<div class="approved-user-card" title="' + displayName + '">' +
+      '<div class="approved-user-avatar" style="' + avatarStyle + '">' + initial + '</div>' +
+      '<div class="approved-user-info"><div class="approved-user-name">' + displayName + youBadge + '</div></div>' +
+      '<span class="approved-user-apps">📱 ' + (u.appCount || 0) + '</span>' +
+    '</div>';
+  });
+
+  grid.innerHTML = html;
+}
+
+function renderWebsiteLinks() {
+  const section = document.getElementById('websiteLinksSection');
+  const grid = document.getElementById('websiteLinksGrid');
+  const countEl = document.getElementById('websiteLinksCount');
+  if (!section || !grid) return;
+
+  if (!websiteLinks || websiteLinks.length === 0) {
+    section.style.display = 'none';
+    grid.innerHTML = '';
+    return;
+  }
+
+  section.style.display = 'block';
+  countEl.textContent = websiteLinks.length + ' টি';
+  grid.innerHTML = '';
+
+  const defaultIcon = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g"><stop offset="0%" stop-color="#d946ef"/><stop offset="100%" stop-color="#a855f7"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="url(#g)"/><text x="32" y="44" font-size="30" text-anchor="middle" fill="white">🔗</text></svg>`);
+  const fallbackIcon = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23d946ef'/><text x='32' y='44' font-size='30' text-anchor='middle' fill='white'>🔗</text></svg>`);
+
+  websiteLinks.forEach(item => {
+    const a = document.createElement('a');
+    a.className = 'website-link-card';
+    a.href = item.link;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.title = item.name;
+
+    const iconUrl = item.icon || defaultIcon;
+    const subject = (item.subject && item.subject !== 'সাধারণ') ? item.subject : '';
+
+    a.innerHTML = `
+      <img class="website-link-icon" src="${iconUrl}" onerror="this.src='${fallbackIcon}'">
+      <div class="website-link-info">
+        <div class="website-link-name">${item.name}</div>
+        ${subject ? `<div class="website-link-subject">${subject}</div>` : ''}
+      </div>
+    `;
+    grid.appendChild(a);
+  });
+}
+
+function countAppClick(rowIndex, cardEl) {
+  const cb = 'clickCb_' + Date.now();
+  let done = false;
+  window[cb] = function(res) {
+    if (done) return; done = true;
+    if (res && res.success && res.total !== undefined) {
+      let badge = cardEl.querySelector('.app-click-badge');
+      if (!badge) { badge = document.createElement('div'); badge.className = 'app-click-badge'; cardEl.appendChild(badge); }
+      badge.innerHTML = `👆 ${res.total}`;
+      const app = allApps.find(a => a.rowIndex === rowIndex);
+      if (app) app.clicks = res.total;
+    }
+    const s = document.getElementById(cb); if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  };
+  const script = document.createElement('script');
+  script.id = cb; script.src = SCRIPT_URL + '?action=countClick&rowIndex=' + rowIndex + '&callback=' + cb;
+  script.onerror = function() { if (done) return; done = true; const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done) { done = true; const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} } }, 8000);
+}
+
+function incGlobalVisit() {
+  if (sessionStorage.getItem('globalVisitCounted')) return;
+  const cb = 'gvisitCb_' + Date.now();
+  let done = false;
+  window[cb] = function(res) {
+    if (done) return; done = true;
+    console.log('🌐 GlobalVisit Response:', res);
+    if (res && res.success) {
+      sessionStorage.setItem('globalVisitCounted', '1');
+      const el = document.getElementById('dashGlobalVisits');
+      if (el) el.textContent = res.total.toLocaleString('bn-BD');
+    }
+    const s = document.getElementById(cb); if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  };
+  const script = document.createElement('script');
+  script.id = cb; script.src = SCRIPT_URL + '?action=incGlobalVisit&callback=' + cb;
+  script.onerror = function() { if (done) return; done = true; console.warn('⚠️ incGlobalVisit failed'); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done) { done = true; const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} } }, 8000);
+}
+
+function loadStatsDashboard() {
+  const cb = 'statsCb_' + Date.now();
+  let done = false;
+  window[cb] = function(res) {
+    if (done) return; done = true;
+    console.log('📊 Full Stats Response:', JSON.stringify(res));
+
+    if (res && res.success) {
+      const gv = parseInt(res.globalVisits) || 0;
+      console.log('📊 globalVisits received:', gv);
+
+      animateCount(document.getElementById('dashGlobalVisits'), 0, gv, 1400);
+      animateCount(document.getElementById('dashTotalClicks'), 0, res.totalClicks || 0, 1400);
+      animateCount(document.getElementById('dashActiveApps'), 0, res.totalApps || 0, 1400);
+      animateCount(document.getElementById('dashTotalApps'), 0, allApps.length, 1400);
+      renderTopApps(res.topApps || []);
+    } else {
+      console.warn('⚠️ getStats failed, using local');
+      renderStatsLocal();
+    }
+    const s = document.getElementById(cb); if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  };
+  const script = document.createElement('script');
+  script.id = cb; script.src = SCRIPT_URL + '?action=getStats&callback=' + cb;
+  script.onerror = function() { if (done) return; done = true; console.warn('⚠️ getStats network error'); renderStatsLocal(); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done) { done = true; console.warn('⚠️ getStats timeout'); renderStatsLocal(); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} } }, 10000);
+}
+
+function renderStatsLocal() {
+  let totalClicks = 0, activeApps = 0;
+  const withClicks = [];
+  allApps.forEach(a => {
+    const c = a.clicks || 0;
+    if (c > 0) { totalClicks += c; activeApps++; withClicks.push({ name: a.name, clicks: c }); }
+  });
+  withClicks.sort((a, b) => b.clicks - a.clicks);
+  animateCount(document.getElementById('dashTotalClicks'), 0, totalClicks, 1400);
+  animateCount(document.getElementById('dashActiveApps'), 0, activeApps, 1400);
+  animateCount(document.getElementById('dashTotalApps'), 0, allApps.length, 1400);
+  renderTopApps(withClicks.slice(0, 10));
+}
+
+function renderTopApps(topApps) {
+  const c = document.getElementById('topAppsContainer');
+  if (!topApps || topApps.length === 0) { c.innerHTML = '<div class="top-apps-empty">এখনো কোনো অ্যাপে ক্লিক হয়নি</div>'; return; }
+  c.innerHTML = topApps.map((app, i) => `<div class="top-app-row"><div class="top-app-rank">${i + 1}</div><div class="top-app-name">${app.name}</div><div class="top-app-clicks">👆 ${app.clicks}</div></div>`).join('');
+}
+
+function renderAllApps() {
+  const grid = document.getElementById('appsGrid');
+  if (!grid) return;
+  let apps = allApps;
+  if (searchQuery) apps = apps.filter(a => a.name.toLowerCase().includes(searchQuery) || a.subject.toLowerCase().includes(searchQuery) || a.category.toLowerCase().includes(searchQuery));
+  document.getElementById('chipCount').textContent = apps.length + ' টি';
+  document.getElementById('sectionTitle').textContent = searchQuery ? '🔍 ফলাফল' : '📱 সব অ্যাপ';
+  grid.innerHTML = '';
+  if (apps.length === 0) { grid.innerHTML = '<div class="loader">পাওয়া যায়নি</div>'; return; }
+  apps.forEach(app => grid.appendChild(createAppCard(app, false)));
+}
+
+function renderClassApps() {
+  const grid = document.getElementById('classAppsGrid');
+  if (!grid) return;
+  let apps = allApps.filter(a => a.category === currentClass);
+  if (currentSubject !== 'all') apps = apps.filter(a => a.subject === currentSubject);
+  if (searchQuery) apps = apps.filter(a => a.name.toLowerCase().includes(searchQuery) || a.subject.toLowerCase().includes(searchQuery));
+  document.getElementById('classChipCount').textContent = apps.length + ' টি';
+  grid.innerHTML = '';
+  if (apps.length === 0) { grid.innerHTML = '<div class="loader">নেই</div>'; return; }
+  apps.forEach(app => grid.appendChild(createAppCard(app, false)));
+}
+
+function createAppCard(app, highlight) {
+  const card = document.createElement('div');
+  card.className = 'app-card' + (highlight ? ' new-highlight' : '');
+  card.title = app.name;
+
+  const clicks = app.clicks || 0;
+  if (clicks > 0) {
+    const badge = document.createElement('div');
+    badge.className = 'app-click-badge';
+    badge.innerHTML = `👆 ${clicks}`;
+    card.appendChild(badge);
+  }
+
+  const iconUrl = app.icon || 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#ec4899"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#g)"/><text x="32" y="42" font-size="28" text-anchor="middle" fill="white">📱</text></svg>`);
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = `<div class="app-icon-wrap"><img class="app-icon" src="${iconUrl}" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%236366f1'/><text x='32' y='42' font-size='28' text-anchor='middle' fill='white'>📱</text></svg>`)}'"></div><div class="app-name">${app.name}</div><span class="app-subject">${app.subject}</span>`;
+  card.appendChild(wrapper);
+
+  card.addEventListener('click', () => {
+    if (app.link) window.open(app.link, '_blank', 'noopener');
+    if (app.rowIndex) countAppClick(app.rowIndex, card);
+  });
+  return card;
+}
+
+let doughnutChart, barChart;
+function getChartColors(n) {
+  const p = ['#6366f1','#8b5cf6','#ec4899','#f59e0b','#10b981','#06b6d4','#ef4444','#84cc16','#f97316','#14b8a6'];
+  return Array.from({ length: n }, (_, i) => p[i % p.length]);
+}
+
+function initCharts() {
+  if (!window.__chartReady || typeof Chart === 'undefined') return;
+  const cm = {}; allApps.forEach(a => cm[a.category] = (cm[a.category] || 0) + 1);
+  const cl = Object.keys(cm), cv = Object.values(cm);
+  const sm = {}; allApps.forEach(a => sm[a.subject] = (sm[a.subject] || 0) + 1);
+  const sl = Object.keys(sm), sv = Object.values(sm);
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const tc = isDark ? '#94a3b8' : '#64748b';
+  const gc = isDark ? 'rgba(148,163,184,0.1)' : 'rgba(100,116,139,0.1)';
+
+  if (doughnutChart) doughnutChart.destroy();
+  doughnutChart = new Chart(document.getElementById('doughnutChart'), {
+    type: 'doughnut',
+    data: { labels: cl, datasets: [{ data: cv, backgroundColor: getChartColors(cl.length), borderWidth: 0 }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: tc, font: { size: 12, family: 'Hind Siliguri' }, padding: 12 } } } }
+  });
+
+  if (barChart) barChart.destroy();
+  barChart = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: { labels: sl, datasets: [{ data: sv, backgroundColor: getChartColors(sl.length), borderRadius: 8 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: tc }, grid: { display: false } }, y: { beginAtZero: true, ticks: { color: tc, stepSize: 1 }, grid: { color: gc } } } }
+  });
+}
+
+function scheduleCharts() {
+  if (window.__chartReady) initCharts();
+  else window.__pendingChart = initCharts;
+}
+
+/* ═══════ অ্যাকর্ডিয়ন ট্রি নেভিগেশন ═══════ */
+function buildClassNav() {
+  const nav = document.getElementById('classNav');
+  nav.innerHTML = '';
+
+  const allItem = document.createElement('button');
+  allItem.className = 'nav-item';
+  allItem.dataset.class = 'all';
+  allItem.innerHTML = `
+    <span class="nav-icon home-icon">${getHomeIcon()}</span>
+    <span class="nav-text">হোম</span>
+    <span class="nav-badge">${allApps.length}</span>
+  `;
+  allItem.onclick = () => selectClass('all', allItem);
+  nav.appendChild(allItem);
+
+  const map = {};
+  allApps.forEach(a => map[a.category] = (map[a.category] || 0) + 1);
+  const classes = Object.keys(map).sort();
+
+  classes.forEach(cat => {
+    const group = document.createElement('div');
+    group.className = 'nav-group';
+    group.dataset.class = cat;
+
+    const classBtn = document.createElement('button');
+    classBtn.className = 'nav-item class-item';
+    classBtn.innerHTML = `
+      <span class="nav-icon folder-icon">${getFolderIcon(false)}</span>
+      <span class="nav-text">${cat}</span>
+      <span class="nav-badge">${map[cat]}</span>
+      ${getChevronSvg()}
+    `;
+    classBtn.onclick = (e) => {
+      e.stopPropagation();
+      selectClass(cat, classBtn);
+    };
+    group.appendChild(classBtn);
+
+    const children = document.createElement('div');
+    children.className = 'nav-children';
+
+    const classApps = allApps.filter(a => a.category === cat);
+    const subMap = {};
+    classApps.forEach(a => subMap[a.subject] = (subMap[a.subject] || 0) + 1);
+    const subjects = Object.keys(subMap).sort();
+
+    const allSubBtn = document.createElement('button');
+    allSubBtn.className = 'nav-item sub-item';
+    allSubBtn.dataset.subject = 'all';
+    allSubBtn.innerHTML = `
+      <span class="nav-icon sub-icon">${getListIcon()}</span>
+      <span class="nav-text">সব বিষয়</span>
+      <span class="nav-badge">${classApps.length}</span>
+    `;
+    allSubBtn.onclick = (e) => {
+      e.stopPropagation();
+      selectSubject('all', allSubBtn, cat);
+    };
+    children.appendChild(allSubBtn);
+
+    subjects.forEach(subj => {
+      const subBtn = document.createElement('button');
+      subBtn.className = 'nav-item sub-item';
+      subBtn.dataset.subject = subj;
+      subBtn.innerHTML = `
+        <span class="nav-icon sub-icon">${getFileIcon()}</span>
+        <span class="nav-text">${subj}</span>
+        <span class="nav-badge">${subMap[subj]}</span>
+      `;
+      subBtn.onclick = (e) => {
+        e.stopPropagation();
+        selectSubject(subj, subBtn, cat);
+      };
+      children.appendChild(subBtn);
+    });
+
+    group.appendChild(children);
+    nav.appendChild(group);
+  });
+
+  if (currentClass !== 'all') {
+    const grp = nav.querySelector(`.nav-group[data-class="${CSS.escape(currentClass)}"]`);
+    if (grp) {
+      grp.classList.add('open');
+      const icon = grp.querySelector('.folder-icon');
+      if (icon) icon.innerHTML = getFolderIcon(true);
+      const cb = grp.querySelector('.class-item');
+      if (cb) cb.classList.add('active');
+      grp.querySelectorAll('.sub-item').forEach(s => {
+        if (s.dataset.subject === currentSubject) s.classList.add('active');
+      });
+    }
+  }
+}
+
+function selectClass(cat, btn) {
+  if (cat === 'all') { goHome(); return; }
+
+  const nav = document.getElementById('classNav');
+  const group = btn.closest('.nav-group');
+  const wasOpen = group.classList.contains('open');
+  const isSameClass = (currentClass === cat);
+
+  nav.querySelectorAll('.nav-group').forEach(g => {
+    if (g !== group) {
+      g.classList.remove('open');
+      const icon = g.querySelector('.folder-icon');
+      if (icon) icon.innerHTML = getFolderIcon(false);
+      g.querySelectorAll('.class-item').forEach(el => el.classList.remove('active'));
+      g.querySelectorAll('.sub-item').forEach(el => el.classList.remove('active'));
+    }
+  });
+
+  if (wasOpen && isSameClass) {
+    group.classList.remove('open');
+    const icon = group.querySelector('.folder-icon');
+    if (icon) icon.innerHTML = getFolderIcon(false);
+    group.querySelector('.class-item').classList.remove('active');
+    group.querySelectorAll('.sub-item').forEach(el => el.classList.remove('active'));
+    goHome();
+    return;
+  }
+
+  group.classList.add('open');
+  btn.classList.add('active');
+  const icon = btn.querySelector('.folder-icon');
+  if (icon) icon.innerHTML = getFolderIcon(true);
+
+  const allSub = group.querySelector('.sub-item[data-subject="all"]');
+  group.querySelectorAll('.sub-item').forEach(el => el.classList.remove('active'));
+  if (allSub) allSub.classList.add('active');
+
+  currentClass = cat;
+  currentSubject = 'all';
+  updateHeaderTitle();
+  showPage('classPage');
+  renderClassApps();
+
+  if (window.innerWidth < 900) closeSidebar();
+}
+
+function selectSubject(subj, btn, cat) {
+  const group = btn.closest('.nav-group');
+
+  if (!group.classList.contains('open')) {
+    const classBtn = group.querySelector('.class-item');
+    if (classBtn) selectClass(cat, classBtn);
+  }
+
+  group.querySelectorAll('.sub-item').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+
+  const classBtn = group.querySelector('.class-item');
+  if (classBtn) classBtn.classList.add('active');
+
+  currentClass = cat;
+  currentSubject = subj;
+  updateHeaderTitle();
+  renderClassApps();
+
+  if (window.innerWidth < 900) closeSidebar();
+}
+
+function updateHeaderTitle() {
+  const title = document.getElementById('pageTitle');
+  const sub = document.getElementById('pageSubtitle');
+  if (currentClass === 'all') { title.textContent = '📊 ড্যাশবোর্ড'; sub.textContent = 'সব অ্যাপ এক নজরে'; }
+  else if (currentSubject === 'all') { title.textContent = getClassIcon(currentClass) + ' ' + currentClass; sub.textContent = 'শ্রেণির সব অ্যাপ'; }
+  else { title.textContent = getClassIcon(currentClass) + ' ' + currentClass; sub.textContent = 'বিষয়: ' + currentSubject; }
+  const cpT = document.getElementById('classPageTitle');
+  const cpS = document.getElementById('classPageSubtitle');
+  if (cpT) cpT.textContent = getClassIcon(currentClass) + ' ' + currentClass;
+  if (cpS) cpS.textContent = (currentSubject === 'all') ? 'শ্রেণির সব অ্যাপ' : 'বিষয়: ' + currentSubject;
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goHome() {
+  currentClass = 'all'; currentSubject = 'all';
+  const nav = document.getElementById('classNav');
+  nav.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  nav.querySelectorAll('.nav-group').forEach(g => {
+    g.classList.remove('open');
+    const icon = g.querySelector('.folder-icon');
+    if (icon) icon.innerHTML = getFolderIcon(false);
+  });
+  const homeBtn = nav.querySelector('.nav-item[data-class="all"]');
+  if (homeBtn) homeBtn.classList.add('active');
+  updateHeaderTitle();
+  showPage('homePage');
+  if (window.innerWidth < 900) closeSidebar();
+}
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value.toLowerCase().trim();
+  if (currentClass === 'all') renderAllApps();
+  else renderClassApps();
+});
+
+function showError(msg) {
+  document.getElementById('appsGrid').innerHTML = `<div class="error-box"><h3>❌ ডেটা লোড হয়নি</h3><p>${msg}</p></div>`;
+}
+function getColIndex(table, name) {
+  if (!table.cols) return -1;
+  return table.cols.findIndex(c => (c.label || '').trim().toLowerCase() === name.toLowerCase());
+}
+function normalizeUrl(url) {
+  if (!url) return '';
+  url = url.toString().trim();
+  if (url === '' || url === '#') return '';
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  return url;
+}
+function isTruthy(v) {
+  if (v === null || v === undefined) return false;
+  const s = v.toString().trim().toLowerCase();
+  return ['yes','y','true','1','হ্যাঁ','হা','✓','√','new','নতুন'].includes(s);
+}
+
+function parseData(table) {
+  const rows = table.rows || [];
+  let iName = getColIndex(table, 'Name'), iLink = getColIndex(table, 'Link'), iIcon = getColIndex(table, 'Icon');
+  let iClass = getColIndex(table, 'Class'), iSubject = getColIndex(table, 'Subject');
+  let iNew = getColIndex(table, 'New'), iUserId = getColIndex(table, 'UserId'), iClicks = getColIndex(table, 'Clicks');
+
+  if (iName === -1) iName = 0; if (iLink === -1) iLink = 1; if (iIcon === -1) iIcon = 2;
+  if (iClass === -1) iClass = 3; if (iSubject === -1) iSubject = 4;
+
+  const allRows = rows.map((row, idx) => {
+    const c = row.c || [];
+    const g = i => (i >= 0 && c[i]) ? (c[i].v || c[i].f || '') : '';
+    return {
+      rowIndex: idx + 2,
+      name: g(iName) || 'নাম নেই',
+      link: normalizeUrl(g(iLink)),
+      icon: g(iIcon) || '',
+      category: (g(iClass) || 'অন্যান্য').toString().trim(),
+      subject: (g(iSubject) || 'সাধারণ').toString().trim(),
+      isNew: isTruthy(g(iNew)),
+      userId: (g(iUserId) || '').toString().trim(),
+      clicks: parseInt(g(iClicks) || '0', 10) || 0
+    };
+  }).filter(a => a.link);
+
+  websiteLinks = allRows.filter(a => isLinkCategory(a.category));
+  allApps = allRows.filter(a => !isLinkCategory(a.category));
+
+  extractNotices(table);
+  updateStats();
+  buildClassNav();
+  renderNewApps();
+  renderAllApps();
+  renderWebsiteLinks();
+  scheduleCharts();
+}
+
+function extractNotices(table) {
+  const idx = getColIndex(table, 'Notice');
+  const bar = document.getElementById('noticeBar');
+  if (idx === -1) { bar.style.display = 'none'; return; }
+  const notices = [];
+  (table.rows || []).forEach(row => {
+    const c = row.c || [];
+    const val = c[idx] ? (c[idx].v || c[idx].f || '') : '';
+    const t = val.toString().trim();
+    if (t) notices.push(t);
+  });
+  renderNotices(notices);
+}
+
+function renderNotices(notices) {
+  const bar = document.getElementById('noticeBar');
+  const scroller = document.getElementById('noticeScroll');
+  if (!notices || notices.length === 0) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+  const html = notices.map(n => `<span class="notice-item">📌 ${n}</span>`).join('<span class="notice-sep">◆</span>');
+  scroller.innerHTML = html + '<span class="notice-sep">◆</span>' + html;
+  scroller.style.animationDuration = Math.max(18, Math.min(50, notices.length * 10)) + 's';
+}
+
+function animateCount(el, from, to, duration) {
+  if (!el) return;
+  const start = performance.now();
+  const diff = to - from;
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.floor(from + diff * eased).toLocaleString('bn-BD');
+    if (t < 1) requestAnimationFrame(step);
+    else el.textContent = to.toLocaleString('bn-BD');
+  }
+  requestAnimationFrame(step);
+}
+
+function updateStats() {
+  document.getElementById('statApps').textContent = allApps.length;
+  document.getElementById('statClasses').textContent = [...new Set(allApps.map(a => a.category))].length;
+  document.getElementById('statSubjects').textContent = [...new Set(allApps.map(a => a.subject))].length;
+}
+
+function renderNewApps() {
+  const section = document.getElementById('newAppsSection');
+  const grid = document.getElementById('newAppsGrid');
+  const countEl = document.getElementById('newAppsCount');
+  const newApps = allApps.filter(a => a.isNew);
+  if (newApps.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  countEl.textContent = newApps.length + ' টি';
+  grid.innerHTML = '';
+  newApps.slice(-6).forEach(app => grid.appendChild(createAppCard(app, true)));
+}
+
+function deleteApp(rowIndex, appName) {
+  if (!loggedInUser) return;
+  if (!confirm(`"${appName}" ডিলিট করবেন?`)) return;
+
+  const cb = 'delCb_' + Date.now();
+  let done = false;
+  window[cb] = function(res) {
+    if (done) return; done = true;
+    if (res && res.success) {
+      alert('✅ ডিলিট হয়েছে');
+      loadSheetData(); loadStatsDashboard(); loadApprovedUsers();
+      setTimeout(() => { if (document.getElementById('myAppsBox').classList.contains('show')) renderMyApps(); }, 1500);
+    } else alert('❌ ' + ((res && res.error) || 'ব্যর্থ'));
+    const s = document.getElementById(cb); if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  };
+  const params = new URLSearchParams({ action: 'deleteApp', userId: loggedInUser.userId, password: loggedInUser.password, rowIndex, callback: cb });
+  const script = document.createElement('script');
+  script.id = cb; script.src = SCRIPT_URL + '?' + params.toString();
+  script.onerror = function() { if (done) return; done = true; alert('❌ নেটওয়ার্ক'); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done) { done = true; alert('⏱️ সময় শেষ'); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} } }, 15000);
+}
+
+function openEditModal(rowIndex) {
+  if (!loggedInUser) return;
+  const app = allApps.find(a => a.rowIndex === rowIndex) || websiteLinks.find(a => a.rowIndex === rowIndex);
+  if (!app) return;
+  editingRowIndex = rowIndex;
+  document.getElementById('eName').value = app.name || '';
+  document.getElementById('eLink').value = app.link || '';
+  document.getElementById('eIcon').value = app.icon || '';
+  document.getElementById('eClass').value = app.category || '';
+  document.getElementById('eSubject').value = app.subject || '';
+  document.getElementById('eNew').checked = !!app.isNew;
+  document.getElementById('editStatus').style.display = 'none';
+  document.getElementById('editModalOverlay').classList.add('show');
+}
+function closeEditModal() { document.getElementById('editModalOverlay').classList.remove('show'); editingRowIndex = null; }
+
+function saveEdit() {
+  if (!editingRowIndex || !loggedInUser) return;
+  const name = document.getElementById('eName').value.trim();
+  const link = document.getElementById('eLink').value.trim();
+  const icon = document.getElementById('eIcon').value.trim();
+  const cls = document.getElementById('eClass').value.trim();
+  const subject = document.getElementById('eSubject').value.trim();
+  const newApp = document.getElementById('eNew').checked ? 'yes' : '';
+
+  if (!name || !link || !cls || !subject) return showEditStatus('error', '⚠️ সব ঘর পূরণ করুন');
+
+  const btn = document.getElementById('saveEditBtn');
+  btn.disabled = true; btn.querySelector('span').textContent = 'সংরক্ষণ...';
+  showEditStatus('success', '⏳ আপডেট...');
+
+  const cb = 'editCb_' + Date.now();
+  let done = false;
+  window[cb] = function(res) {
+    if (done) return; done = true;
+    btn.disabled = false; btn.querySelector('span').textContent = 'সংরক্ষণ করুন';
+    if (res && res.success) {
+      showEditStatus('success', '✅ সফল');
+      setTimeout(() => { closeEditModal(); loadSheetData(); loadStatsDashboard(); setTimeout(() => { if (document.getElementById('myAppsBox').classList.contains('show')) renderMyApps(); }, 1500); }, 800);
+    } else showEditStatus('error', '❌ ' + ((res && res.error) || 'ব্যর্থ'));
+    const s = document.getElementById(cb); if (s) s.remove();
+    try { delete window[cb]; } catch(e) {}
+  };
+  const params = new URLSearchParams({ action: 'editApp', userId: loggedInUser.userId, password: loggedInUser.password, rowIndex: editingRowIndex, name, link, icon, cls, subject, newApp, callback: cb });
+  const script = document.createElement('script');
+  script.id = cb; script.src = SCRIPT_URL + '?' + params.toString();
+  script.onerror = function() { if (done) return; done = true; btn.disabled = false; btn.querySelector('span').textContent = 'সংরক্ষণ করুন'; showEditStatus('error', '❌ নেটওয়ার্ক'); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} };
+  document.body.appendChild(script);
+  setTimeout(() => { if (!done) { done = true; btn.disabled = false; btn.querySelector('span').textContent = 'সংরক্ষণ করুন'; showEditStatus('error', '⏱️ সময় শেষ'); const s = document.getElementById(cb); if (s) s.remove(); try { delete window[cb]; } catch(e) {} } }, 20000);
+}
+
+function showEditStatus(type, msg) {
+  const el = document.getElementById('editStatus');
+  el.className = 'auth-status ' + type;
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function restoreLogin() {
+  updateHeaderButtons();
+  if (loggedInUser) setTimeout(populateClassSubjectLists, 1500);
+}
+
+document.getElementById('loginModalOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('loginModalOverlay')) closeLoginModal();
+});
+document.getElementById('adminModalOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('adminModalOverlay')) closeAdminModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { closeLoginModal(); closeAdminModal(); closeEditModal(); }
+});
+
+initTheme();
+loadSheetData();
+loadComments();
+restoreLogin();
+
+setTimeout(incGlobalVisit, 1500);
+setTimeout(loadStatsDashboard, 2500);
+setTimeout(loadApprovedUsers, 3000);
+
+setInterval(loadStatsDashboard, 60000);
+</script>
+</body>
+</html>
